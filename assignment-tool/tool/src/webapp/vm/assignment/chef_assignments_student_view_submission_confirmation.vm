@@ -1,3 +1,6 @@
+<!-- $Id: chef_assignments_student_view_submission_confirmation.vm 94199 2011-06-28 20:59:16Z holladay@longsight.com $ -->
+<!-- start:  chef_assignments_student_view_submission_confirmation.vm  -->
+#parse("/vm/assignment/assignment_macros.vm")
 ## showing the submission confirmation page
 <div class="portletBody">
 	<h3>
@@ -131,9 +134,7 @@
 					#set ($props = $attachment.Properties) 
 					#if ($!props)
 						<li>$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))						
-						#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-							($props.getPropertyFormatted($props.NamePropContentLength))
-						#end
+						#propertyDetails($props)
 						</li>
 					#end
 				#end
@@ -145,4 +146,4 @@
 		</p>
 	</form>
 </div>
-
+<!-- end:  chef_assignments_student_view_submission_confirmation.vm  -->

@@ -1,3 +1,5 @@
+<!-- $Id: chef_assignments_instructor_student_list_submissions.vm 94199 2011-06-28 20:59:16Z holladay@longsight.com $ -->
+<!-- start: chef_assignments_instructor_student_list_submissions.vm  -->
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_student_list_submissions.vm,v 1.8 2005/05/28 03:04:35 ggolden.umich.edu Exp $ -->
 <div class="portletBody" xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"  xmlns:aaa="http://www.w3.org/2005/07/aaa">
 		<ul class="navIntraTool actionToolBar" role="menu">
@@ -29,7 +31,12 @@
 			#if ($allowUpdateSite)
 				<li #if ($prevAction==false) class="firstToolBarItem"  #set($prevAction=true) #end role="menuitem">				
 					<span><a href="#toolLink("$action" "doPermissions")" title="$tlang.getString('permis')">$tlang.getString('permis')</a></span>
-				</li>	
+				</li>
+				#if ($enableViewOption)		
+					<li #if ($prevAction==false) class="firstToolBarItem" #set($prevAction=true)  #end  role="menuitem">
+						<span><a href="#toolLink("$action" "doOptions")" title="$tlang.getString('options')">$tlang.getString('options')</a></span>
+					</li>
+				#end	
 			#end
 	</ul>
 	<h3>
@@ -50,7 +57,7 @@
 					<input type="hidden" name="eventSubmit_doView" value="view" />
 					<label for="view">$tlang.getString("gen.view2")</label>
 					<span class="skip">$tlang.getString("newassig.selectmessage")</span>
-					<select name="view" id="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+					<select name="view" id="view" size="1" tabindex="3" onchange="document.viewForm.submit();">
 						<option value="lisofass1" >$!tlang.getString('lisofass1')</option>
 						<option value="lisofass2" selected="selected" >$!tlang.getString('lisofass2')</option>
 					</select>
@@ -120,7 +127,7 @@
 										</td>
 										<td headers="assignment">
 											<h5>
-												$validator.escapeHtml($validator.limit($assignment.Title, 40))
+												<a href="#toolLinkParam("AssignmentAction" "doGrade_submission" "assignmentId=$validator.escapeUrl($assignment.Reference)&submissionId=$validator.escapeUrl($submission.Reference)&option=lisofass2")" title="$validator.limit($validator.escapeHtml($assignment.Title), 40)">$validator.limit($validator.escapeHtml($assignment.Title), 40)</a>
 											</h5>
 										</td>
 										<td headers="submitted">
@@ -171,3 +178,4 @@
 		</form>	
 	#end
 </div>
+<!-- end: chef_assignments_instructor_student_list_submissions.vm  -->

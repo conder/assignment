@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.7.x/assignment-impl/impl/src/java/org/sakaiproject/assignment/taggable/impl/AssignmentItemImpl.java $
- * $Id: AssignmentItemImpl.java 80154 2010-07-29 15:19:42Z zqian@umich.edu $
+ * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.8.x/assignment-impl/impl/src/java/org/sakaiproject/assignment/taggable/impl/AssignmentItemImpl.java $
+ * $Id: AssignmentItemImpl.java 75499 2010-03-31 15:22:25Z zqian@umich.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2007, 2008 The Sakai Foundation

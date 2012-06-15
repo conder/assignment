@@ -1,3 +1,5 @@
+<!-- $Id: chef_assignments_instructor_uploadAll.vm 106865 2012-04-12 06:53:21Z steve.swinsburg@gmail.com $ -->
+<!-- start: chef_assignments_instructor_uploadALL.vm  -->
 ## showing the page for preparing upload zip file
 <script language="JavaScript" type="text/JavaScript">
 	<!--
@@ -14,7 +16,7 @@
 			}
 		}
 		
-		function invokeDownloadUrl(accessPointUrl, actionString, alertMessage, param0, param1)
+		function invokeDownloadUrl(accessPointUrl, actionString, alertMessage, param0, param1, param2, param3)
 	{
 			var extraInfoArray = [];
 			if (document.getElementById('studentSubmissionText') && document.getElementById('studentSubmissionText').checked)
@@ -55,7 +57,7 @@
 				// cut the & in the end
 				accessPointUrl = accessPointUrl.substring(0, accessPointUrl.length-1);
 				// attach the assignment reference
-				accessPointUrl = accessPointUrl + "&contextString=" + param0 + "&viewString=" + param1;
+				accessPointUrl = accessPointUrl + "&contextString=" + param0 + "&viewString=" + param1 + "&searchString=" + param2 + "&searchFilterOnly=" + param3;
    	window.location.href=accessPointUrl;
    	document.getElementById('downloadUrl').value=accessPointUrl; 
    	document.getElementById('uploadAllForm').action=actionString; 
@@ -100,7 +102,7 @@
 			#end
 			<p class="checkbox indnt2">
 			 ## select-all box
-			 <input type="checkbox" name="selectall" id="selectall" title="toggle select all" onclick="javascript:toggleSelectAll(this, 'choices')"  />
+			 <input type="checkbox" name="selectall" id="selectall" title="$tlang.getString('gen.toggle')" onclick="javascript:toggleSelectAll(this, 'choices')"  />
 			 <label for="selectall">$tlang.getString("all")</label><br/>
 			 #if ($!includeSubmissionText)
 					## student submission text
@@ -144,7 +146,7 @@
 				#set($alertMessage = $tlang.getString('downloadall.alert.choose.element'))
 				#set($actionString="#toolLinkParam($action 'doCancel_download_upload_all' 'flow=cancel')")
 				<input type="button" name="downloadButton" id="downloadButton"  accesskey="d" class="active"
-						onclick="javascript:invokeDownloadUrl('$accessPointUrl', '$actionString', '$alertMessage', '$contextString', '$viewString');" value="$tlang.getString('downloadall.button.download')" />
+						onclick="javascript:invokeDownloadUrl('$accessPointUrl', '$actionString', '$alertMessage', '$contextString', '$viewString', '$searchString', '$showSubmissionByFilterSearchOnly');" value="$tlang.getString('downloadall.button.download')" />
 			#else
 				<input type="button" name="uploadButton" id="uploadButton"  accesskey="s" class="active"
 						onclick="javascript:showNotif('submitnotif','uploadButton','uploadAllForm');document.getElementById('uploadAllForm').action='#toolLinkParam($action 'doDownload_upload_all' 'flow=upload')'; submitform('uploadAllForm');" value="$tlang.getString('uploadall.button.upload')" />
@@ -172,4 +174,4 @@
 		-->
 	</script>
 </div>
-
+<!-- end: chef_assignments_instructor_uploadALL.vm  -->

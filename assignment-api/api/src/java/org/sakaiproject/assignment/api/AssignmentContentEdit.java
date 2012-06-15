@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.7.x/assignment-api/api/src/java/org/sakaiproject/assignment/api/AssignmentContentEdit.java $
- * $Id: AssignmentContentEdit.java 59673 2009-04-03 23:02:03Z arwhyte@umich.edu $
+ * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.8.x/assignment-api/api/src/java/org/sakaiproject/assignment/api/AssignmentContentEdit.java $
+ * $Id: AssignmentContentEdit.java 93683 2011-06-09 23:15:54Z ottenhoff@longsight.com $
  ***********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008 The Sakai Foundation

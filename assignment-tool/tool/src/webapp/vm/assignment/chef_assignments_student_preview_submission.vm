@@ -1,3 +1,6 @@
+<!-- $Id: chef_assignments_student_preview_submission.vm 94199 2011-06-28 20:59:16Z holladay@longsight.com $ -->
+<!-- start: chef_assignments_student_preview_submission.vm -->
+#parse("/vm/assignment/assignment_macros.vm")
 <div class="portletBody">
 
 	<h3>
@@ -118,9 +121,7 @@
 								<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 							#end
 							<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-							#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-								($props.getPropertyFormatted($props.NamePropContentLength))
-							#end
+							#propertyDetails($props)
 						</li>
 					#end
 				#end
@@ -207,4 +208,4 @@
 		</div>
 	</form>
 </div>
-
+<!-- end: chef_assignments_student_preview_submission.vm -->

@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.7.x/assignment-impl/impl/src/java/org/sakaiproject/assignment/impl/conversion/impl/CombineDuplicateSubmissionsConversionHandler.java $
- * $Id: CombineDuplicateSubmissionsConversionHandler.java 73179 2010-02-05 15:45:00Z zqian@umich.edu $
+ * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.8.x/assignment-impl/impl/src/java/org/sakaiproject/assignment/impl/conversion/impl/CombineDuplicateSubmissionsConversionHandler.java $
+ * $Id: CombineDuplicateSubmissionsConversionHandler.java 70863 2010-01-04 03:34:41Z zqian@umich.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009 The Sakai Foundation

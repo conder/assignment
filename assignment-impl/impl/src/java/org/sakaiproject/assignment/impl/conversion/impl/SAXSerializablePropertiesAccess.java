@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.7.x/assignment-impl/impl/src/java/org/sakaiproject/assignment/impl/conversion/impl/SAXSerializablePropertiesAccess.java $
- * $Id: SAXSerializablePropertiesAccess.java 59673 2009-04-03 23:02:03Z arwhyte@umich.edu $
+ * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.8.x/assignment-impl/impl/src/java/org/sakaiproject/assignment/impl/conversion/impl/SAXSerializablePropertiesAccess.java $
+ * $Id: SAXSerializablePropertiesAccess.java 84784 2010-11-16 16:29:19Z arwhyte@umich.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008 The Sakai Foundation
@@ -63,7 +63,8 @@ public class SAXSerializablePropertiesAccess implements SerializablePropertiesAc
 		if ( properties.size() != access.properties.size() ) {
 			throw new Exception("Differing number of properties ");
 		}
-		for ( Object key: properties.keySet() ) {
+		for ( Map.Entry<String, Object> entry: properties.entrySet() ) {
+			String key = entry.getKey();
 			if ( !access.properties.containsKey(key) ) {
 				throw new Exception("Missing Property "+key);							
 			}
@@ -71,7 +72,8 @@ public class SAXSerializablePropertiesAccess implements SerializablePropertiesAc
 				throw new Exception("Property Changed "+key+"["+properties.get(key)+"]["+access.properties.get(key)+"]");											
 			}
 		}
-		for ( Object key: access.properties.keySet() ) {
+		for ( Map.Entry<String, Object> entry: access.properties.entrySet()) {
+			String key = entry.getKey();
 			if ( !properties.containsKey(key) ) {
 				throw new Exception("Missing Property "+key);							
 			}

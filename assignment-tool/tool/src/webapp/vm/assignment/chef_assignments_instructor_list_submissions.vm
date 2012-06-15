@@ -1,25 +1,43 @@
+<!-- $Id: chef_assignments_instructor_list_submissions.vm 107301 2012-04-17 05:41:33Z steve.swinsburg@gmail.com $ -->
+<!-- start: chef_assignments_instructor_list_submissions.vm  -->
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_list_submissions.vm,v 1.10 2005/06/14 16:07:00 zqian.umich.edu Exp $ -->
+#parse("/vm/assignment/assignment_macros.vm")
 <link href="/sakai-assignment-tool/css/assignment.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" src="/library/js/jquery.js"></script>
 <script type="text/javascript"  src="/sakai-assignment-tool/js/assignments.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         setupToggleAreas('toggleAnchor', 'toggledContent', false, 'fast');
-    });
+
+		$('#submissionList input:checkbox').click(function(){
+			  if ( $("#submissionList input:checked").length ===0){
+				hideAllowResubmission()
+				}
+			else{
+				showAllowResubmission()
+			}
+		});    
+	});
     
     function showAllowResubmission()
     {
-					document.getElementById('allowResubmission_shown').style.display="inline";
+		document.getElementById('allowResubmission_shown').style.display="inline";
     	document.getElementById('allowResubmission_hidden').style.display="none";
+		$('#allowResubmission_shownInner').addClass('highLightBlock').fadeIn(2000,function(){
+			$(this).removeClass('highLightBlock')
+		});
     	document.getElementById('allowResToggle').value="checked";
     	resizeFrame('grow');
     }
     
     function hideAllowResubmission()
     {
-					document.getElementById('allowResubmission_shown').style.display="none";
-    	document.getElementById('allowResubmission_hidden').style.display="inline";
-    	document.getElementById('allowResToggle').value="";
+		$('#allowResubmission_shownInner').fadeOut('fast', function() {
+			document.getElementById('allowResubmission_shown').style.display="none";
+    		document.getElementById('allowResubmission_hidden').style.display="inline";
+    		document.getElementById('allowResToggle').value="";
+		  });
+
     }
     
     function toggleSelectAll(caller, elementName)
@@ -35,6 +53,8 @@
 						}
 					}
    	}
+
+
 </script>
 
 <div class="portletBody" xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"  xmlns:aaa="http://www.w3.org/2005/07/aaa">
@@ -71,7 +91,12 @@
 		#if ($allowUpdateSite)
 			<li #if ($prevAction==false) class="firstToolBarItem" #set($prevAction=true)  #end role="menuitem">
 				<span><a href="#toolLink("$action" "doPermissions")" title="$tlang.getString('permis')">$tlang.getString('permis')</a></span>
-			</li>	
+			</li>
+			#if ($enableViewOption)	
+				<li #if ($prevAction==false) class="firstToolBarItem" #set($prevAction=true)  #end  role="menuitem">
+					<span><a href="#toolLink("$action" "doOptions")" title="$tlang.getString('options')">$tlang.getString('options')</a></span>
+				</li>
+			#end	
 		#end
 	</ul>
 	<h3>
@@ -92,39 +117,47 @@
 			<input type="hidden" name="option" id="option" value="x" />
 			<input type="hidden" name="eventSubmit_doView_submission_list_option" value="x" />
 			## show the view by group choice when there is at least one group defined
-			#if ($!groups.hasNext())
-				<div class="navPanel">
-					<div class="viewNav">
+			<div class="navPanel">
+				<div class="viewNav">
+					#if ($!groups.hasNext())
+						<div class="instruction">
+							$tlang.getString("view_instruction") 
+						</div>
 						<label for="view">
 							$tlang.getString("gen.view2")
 						</label>
 						<span class="skip">$tlang.getString("newassig.selectmessage")</span>
-						<select id="view" name="view" size="1" tabindex="3" onchange="javascript:blur();document.getElementById('option').value='changeView';document.viewForm.submit();return false;">
-							<option value="all" #if($!view.equals("all"))selected="selected"#end >$tlang.getString('gen.viewallgroupssections')</option>
+						<select id="view" name="view" size="1" tabindex="3" onchange="document.getElementById('option').value='changeView';document.viewForm.submit();return false;">
+							#if (!$showSubmissionByFilterSearchOnly)
+								<option value="all" #if($!view.equals("all"))selected="selected"#end >$tlang.getString('gen.viewallgroupssections')</option>
+							#else
+								<option value="" >$tlang.getString('please_select_group')</option>
+							#end
 							#foreach($aGroup in $groups)
 								<option value="$!aGroup.Reference" #if($!view.equals($!aGroup.Reference))selected="selected"#end >$validator.escapeHtml($aGroup.Title)</option>
 							#end
 						</select>
-					</div>
+					#end
+					<p />
+					<label for="$form_search" class="skip">$tlang.getString("search")</label>
+					<input value="$validator.escapeHtml($searchString)" name="search" id="search" type="text" class="searchField"  size="20" />
+					<input type="button" value="$tlang.getString('search')" 
+						onclick="document.getElementById('option').value='search';document.viewForm.submit();return false;" />
+					#if (($!searchString) && (!$searchString.equals("")))
+						<input type="button" class="button" value="$tlang.getString("search_clear")" 
+							onclick="document.getElementById('option').value='clearSearch';document.viewForm.submit();return false;" />
+					#end
 				</div>
-			#end		
-			#set ($submissionType = $assignment.getContent().getTypeOfSubmission())
+			</div>
+		#set ($submissionType = $assignment.getContent().getTypeOfSubmission())
 			#set ($showMsg = false)
 			#set ($showMsg = $!allMsgNumber)
 			#if (!$!showMsg || $showMsg ==0)
 				<div class="allPurpose">
-					$tlang.getString("theisnostudent")
+					<br/>
+					$tlang.getString("nostudent_searchview")
 				</div>
 			#else
-				#if ($submissionType != 4)
-					## only show this for not "non-electronic" type of assignments
-					#set($form_action="eventSubmit_doSet_defaultNoSubmissionScore")
-					#set($form_label = "non.submission.grade")
-				#else
-					## assign grade to not graded "non-electronic" submissions
-					#set($form_action="eventSubmit_doSet_defaultNotGradedNonElectronicScore")
-					#set($form_label="not.graded.non.electronic.submission.grade")
-				#end
 				<div class="listNav">
 						## download all
 							<a href="" onclick="javascript:document.getElementById('option').value='download';document.viewForm.submit();return false;" title="$!tlang.getString('downall')">$!tlang.getString('downall')</a>
@@ -155,20 +188,11 @@
 		#if (!$!showMsg || $showMsg ==0)
 		#else
 		<div class="navPanel">
-			#if ($submissionType != 4)
-				## only show this for not "non-electronic" type of assignments
-				#set($form_action="eventSubmit_doSet_defaultNoSubmissionScore")
-				#set($form_label = "non.submission.grade")
-			#else
-				## assign grade to not graded "non-electronic" submissions
-				#set($form_action="eventSubmit_doSet_defaultNotGradedNonElectronicScore")
-				#set($form_label="not.graded.non.electronic.submission.grade")
-			#end
 			<div class="viewNav">
 							#set ($gradeType = $assignment.getContent().TypeOfGrade)
 				<form name="defaultGradeForm" class="inlineForm" method="post" action="#toolForm($action)">
 					<input type="hidden" name="$!form_action" value="setScore" />
-					<label for="defaultGrade_1" style="display:block" class="textPanelFooter">$tlang.getString($!form_label)</label>
+					<label for="defaultGrade_1" style="display:block" class="textPanelFooter">$!form_label</label>
 					##for non-point-based grading, choose the default grade from drop-down
 					#if ($!gradeType != 3)
 						<select id="defaultGrade_1" name="defaultGrade" size="1" >
@@ -176,11 +200,11 @@
 							#if ($!gradeType == 1)
 								<option value="gen.nograd" #if($!defaultGrade && $!defaultGrade.equals("gen.nograd"))selected="selected"#end>$tlang.getString("gen.nograd")</option>
 							#elseif ($!gradeType == 2)
-								#foreach ($i in ["ungraded", "A+", "A", "A-","B+","B","B-","C+","C","C-","D+","D","D-","E","F"])
+								#foreach ($i in $letterGradeOptions)
 									<option value="$i" #if($!defaultGrade && $!defaultGrade.equals($i))selected="selected"#end>$i</option>
 								#end
 							#elseif ($!gradeType == 4)
-								#foreach ($i in ["ungraded", "Pass", "Fail"])
+								#foreach ($i in ["Pass", "Fail"])
 									<option value="$i" #if($!defaultGrade && $!defaultGrade.equals($i))selected="selected"#end>$i</option>
 								#end
 							#elseif ($!gradeType == 5)
@@ -191,7 +215,7 @@
 						## instructor needs to type in default points in point-based-grading
 						<input type="text" id="defaultGrade_2" name="defaultGrade" value="$!defaultGrade" size="5" />
 					#end
-					<input type="button" accesskey="a" class="active"  name="apply" value="$tlang.getString('gen.applygrade')" onclick="blur();document.defaultGradeForm.submit();" title="$tlang.getString("gen.applygrade")" />
+					<input type="button" accesskey="a" class="active"  name="apply" value="$tlang.getString('gen.applygrade')" onclick="document.defaultGradeForm.submit();" title="$tlang.getString("gen.applygrade")" />
 				</form>
 			</div>
 			<div class="listNav">
@@ -221,7 +245,7 @@
 				<form name="pagesizeForm" class="inlineForm" method="post" action="#toolForm("$action")">
 					<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
 					<label for="selectPageSize" class="skip">$tlang.getString("newassig.selectmessage")</label>
-					<select id="selectPageSize" name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+					<select id="selectPageSize" name="selectPageSize" onchange="document.pagesizeForm.submit();">
 						#foreach ($i in $!pagesizes)
 							<option value="$i" #if($pagesize == $i) selected="selected" #end>$tlang.getString("list.show") $i $tlang.getString("list.itemsper")</option>
 						#end
@@ -281,9 +305,7 @@
 											<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 										#end
 										<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-										#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-											($props.getPropertyFormatted($props.NamePropContentLength))
-										#end
+										#propertyDetails($props)
 									</li>
 									#end
 							#end
@@ -327,9 +349,7 @@
 											<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 										#end
 										<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-										#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-											($props.getPropertyFormatted($props.NamePropContentLength))
-										#end
+										#propertyDetails($props)
 									</li>
 									#end
 							#end
@@ -351,63 +371,65 @@
 					<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("allowResubmission.hide")" border="0" width="13" height="13" align="top" /></a>
 						$tlang.getString("allowResubmission.label")
 				</p>
-			 <p class="instruction">
-			  $tlang.getString("allowResubmission.instruction")
-			 </p>
-			 ##show it only for those assignments not of type non-electronic submission
-						<p class="shorttext" id="allowResubmitNumber">
-							<label for="allowResubmitNumber">
-								$tlang.getString("allow.resubmit.number")
-							</label>
-							<select name="$name_allowResubmitNumber" id="allowResubmitNumber" onchange="if (document.getElementById('allowResubmitNumber').value!=0 && document.getElementById('allowResubmitTime') !=null){document.getElementById('allowResubmitTime').style.display = 'block';}else {document.getElementById('allowResubmitTime').style.display = 'none';}">
-								#foreach ($i in [1..10])
-									<option value="$i" #if($i==$!value_allowResubmitNumber)selected="selected"#end>
-										$i
-									</option>
-								#end
-								<option value="-1" #if($!value_allowResubmitNumber == -1)selected="selected"#end>$tlang.getString("allow.resubmit.number.unlimited")</option>
-							</select>
-						</p>
-						<p class="shorttext" id="allowResubmitTime" style="$!resubmitStyle">
-							## only show date selection when allowed to resubmit
-							<label for="$name_ResubmitMonth">
-								$tlang.getString("gen.acesubunt")
-							</label>
-							#chef_dateselectionwidget($name_ResubmitYear $name_ResubmitMonth $name_ResubmitDay $!value_year_from $!value_year_to $value_ResubmitYear $value_ResubmitMonth $value_ResubmitDay $dateFormat "")
-							$tlang.getString("gen.at") 
-							<select name="$name_ResubmitHour" id="$name_ResubmitHour">
-								#foreach ($i in [1..12])
-									#if ($i == $value_ResubmitHour)
-										<option value="$i" selected="selected">$i</option>
-									#else
-										<option value="$i">$i</option>
+				<div id="allowResubmission_shownInner" style="display:none">
+				 <p class="instruction">
+				  $tlang.getString("allowResubmission.instruction")
+				 </p>
+				 ##show it only for those assignments not of type non-electronic submission
+							<p class="shorttext" id="allowResubmitNumber">
+								<label for="allowResubmitNumber">
+									$tlang.getString("allow.resubmit.number")
+								</label>
+								<select name="$name_allowResubmitNumber" id="allowResubmitNumber" onchange="if (document.getElementById('allowResubmitNumber').value!=0 && document.getElementById('allowResubmitTime') !=null){document.getElementById('allowResubmitTime').style.display = 'block';}else {document.getElementById('allowResubmitTime').style.display = 'none';}">
+									#foreach ($i in [1..10])
+										<option value="$i" #if($i==$!value_allowResubmitNumber)selected="selected"#end>
+											$i
+										</option>
 									#end
-								#end
-							</select>
-							<select name="$name_ResubmitMin" id="$name_ResubmitMin">
-								#foreach ($i in [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55])
-									<option value="$i" #if($i == $value_ResubmitMin)selected="selected"#end>#if($i ==0)00#elseif($i == 5)05#else$i#end</option>
-								#end
-							</select>
-							<select name="$name_ResubmitAMPM" id="$name_ResubmitAMPM">
-								#foreach ($i in ["AM", "PM"])
-									#if ($i == $value_ResubmitAMPM)
-										<option value="$i" selected="selected">$i</option>
-									#else
-										<option value="$i">$i</option>
+									<option value="-1" #if($!value_allowResubmitNumber == -1)selected="selected"#end>$tlang.getString("allow.resubmit.number.unlimited")</option>
+								</select>
+							</p>
+							<p class="shorttext" id="allowResubmitTime" style="$!resubmitStyle">
+								## only show date selection when allowed to resubmit
+								<label for="$name_ResubmitMonth">
+									$tlang.getString("gen.acesubunt")
+								</label>
+								#chef_dateselectionwidget($name_ResubmitYear $name_ResubmitMonth $name_ResubmitDay $!value_year_from $!value_year_to $value_ResubmitYear $value_ResubmitMonth $value_ResubmitDay $dateFormat "")
+								$tlang.getString("gen.at") 
+								<select name="$name_ResubmitHour" id="$name_ResubmitHour">
+									#foreach ($i in [1..12])
+										#if ($i == $value_ResubmitHour)
+											<option value="$i" selected="selected">$i</option>
+										#else
+											<option value="$i">$i</option>
+										#end
 									#end
-								#end
-							</select>
-							## for save the resubmission choice
-							<div class="act">
-								<input type="submit" class="active" name="eventSubmit_doSave_resubmission_option" value="$tlang.getString("update")" accesskey="s" />
-							</div>
-						</p>
+								</select>
+								<select name="$name_ResubmitMin" id="$name_ResubmitMin">
+									#foreach ($i in [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55])
+										<option value="$i" #if($i == $value_ResubmitMin)selected="selected"#end>#if($i ==0)00#elseif($i == 5)05#else$i#end</option>
+									#end
+								</select>
+								<select name="$name_ResubmitAMPM" id="$name_ResubmitAMPM">
+									#foreach ($i in ["AM", "PM"])
+										#if ($i == $value_ResubmitAMPM)
+											<option value="$i" selected="selected">$i</option>
+										#else
+											<option value="$i">$i</option>
+										#end
+									#end
+								</select>
+								## for save the resubmission choice
+								<div class="act">
+									<input type="submit" class="active" name="eventSubmit_doSave_resubmission_option" value="$tlang.getString("update")" accesskey="s" />
+								</div>
+							</p>
+						</div>	
 			</div>
 			## show all submission
-			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" summary="$tlang.getString("gen.viewassliststudentsummary")">
+			<table class="listHier lines nolines" id ="submissionList" cellpadding="0" cellspacing="0" summary="$tlang.getString("gen.viewassliststudentsummary")">
 				<tr>
-					<th id="selectResubmit">
+					<th id="selectResubmit" class="smallCol">
 						<input type="checkbox" name="toggleAllSelectAllowResubmit" value="" id="toggleAllSelectAllowResubmit" onclick="javascript:toggleSelectAll(this, 'selectedAllowResubmit')" />
 					</th> 
 					<th id="attachment" class="attach">
@@ -508,7 +530,7 @@
 						#set($returnedTime = $submission.getTimeReturned())
 						#set($submitTime = $submission.getTimeSubmitted())
 						<tr>
-							<td headers="allowResubmit" class="screenOnly">
+							<td headers="allowResubmit" class="screenOnly smallCol">
 								#set($userId = $!siteUser)
 								<input type="checkbox" name="selectedAllowResubmit" value="$!submitterId" id="check_$submitterId" />
 							</td>
@@ -622,13 +644,16 @@
 							<td headers="gradereleased">
 								&nbsp;
 							</td>
+						</tr>
 					#end
 				#end
 			</table>
 		</form>
 	#end
-	<hr class="itemSeparator" />
-	<h3>$tlang.getString("gen.assdet")</h3>
+	
+	## assignment details
+	<h3  id="toggleModel" class="toggleAnchor specialLink"><img alt="expand" class="expand" src="/library/image/sakai/expand.gif" /><img alt="collapse" class="collapse" src="/library/image/sakai/collapse.gif" />$tlang.getString("gen.assdet")</h3>
+	<div class="toggledContent">
 	<table class="itemSummary" border="0" cellspacing="0" summary="$tlang.getString("gen.theassinf")">
 		<tr> 
 			<th>
@@ -715,11 +740,7 @@
 			</td>
 		</tr>
 	</table>	
-
-
-
-
-
+	
 	#if ($assignment.getContent().getInstructions().length()==0)
 	#else
 		<h4>$tlang.getString("gen.assinf")</h4>
@@ -749,9 +770,7 @@
 							<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 						#end
 						<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-						#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-							($props.getPropertyFormatted($props.NamePropContentLength))
-						#end
+						#propertyDetails($props)
 					</li>
 				#end
 			#end
@@ -759,5 +778,7 @@
 	#end
 	#if ($taggable)
 	   	#parse ("/vm/assignment/chef_assignments_tags_list.vm")
-	#end	
+	#end
+	</div>	
 </div>
+<!-- end: chef_assignments_instructor_list_submissions.vm  -->

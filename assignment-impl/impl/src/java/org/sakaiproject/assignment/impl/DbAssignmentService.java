@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.7.x/assignment-impl/impl/src/java/org/sakaiproject/assignment/impl/DbAssignmentService.java $
- * $Id: DbAssignmentService.java 92751 2011-05-11 11:16:15Z david.horwitz@uct.ac.za $
+ * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.8.x/assignment-impl/impl/src/java/org/sakaiproject/assignment/impl/DbAssignmentService.java $
+ * $Id: DbAssignmentService.java 90096 2011-03-21 07:45:00Z arwhyte@umich.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009 The Sakai Foundation
@@ -215,7 +215,7 @@ public class DbAssignmentService extends BaseAssignmentService
 	 * 
 	 * @return The new storage object for Assignments.
 	 */
-	public AssignmentStorage newAssignmentStorage()
+	protected AssignmentStorage newAssignmentStorage()
 	{
 		return new DbCachedAssignmentStorage(new AssignmentStorageUser());
 
@@ -226,7 +226,7 @@ public class DbAssignmentService extends BaseAssignmentService
 	 * 
 	 * @return The new storage object for AssignmentContents.
 	 */
-	public AssignmentContentStorage newContentStorage()
+	protected AssignmentContentStorage newContentStorage()
 	{
 		return new DbCachedAssignmentContentStorage(new AssignmentContentStorageUser());
 

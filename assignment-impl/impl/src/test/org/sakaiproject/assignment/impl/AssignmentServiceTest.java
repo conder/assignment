@@ -1,5 +1,5 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.7.x/assignment-impl/impl/src/test/org/sakaiproject/assignment/impl/AssignmentServiceTest.java $
+ * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.8.x/assignment-impl/impl/src/test/org/sakaiproject/assignment/impl/AssignmentServiceTest.java $
  * $Id: AssignmentServiceTest.java 59673 2009-04-03 23:02:03Z arwhyte@umich.edu $
  ***********************************************************************************
  *

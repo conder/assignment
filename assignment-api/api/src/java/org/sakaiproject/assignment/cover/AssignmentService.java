@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.7.x/assignment-api/api/src/java/org/sakaiproject/assignment/cover/AssignmentService.java $
- * $Id: AssignmentService.java 78112 2010-05-27 17:06:35Z zqian@umich.edu $
+ * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.8.x/assignment-api/api/src/java/org/sakaiproject/assignment/cover/AssignmentService.java $
+ * $Id: AssignmentService.java 107093 2012-04-16 00:54:36Z steve.swinsburg@gmail.com $
  ***********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008 The Sakai Foundation
@@ -24,9 +24,8 @@ package org.sakaiproject.assignment.cover;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
+import java.util.ArrayList;
 
-import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.component.cover.ComponentManager;
 
 /**
@@ -164,7 +163,7 @@ public class AssignmentService {
 			java.lang.String param0) {
 		org.sakaiproject.assignment.api.AssignmentService service = getInstance();
 		if (service == null)
-			return new Vector();
+			return new ArrayList();
 
 		return service.getGroupsAllowAddAssignment(param0);
 	}
@@ -173,7 +172,7 @@ public class AssignmentService {
 			java.lang.String param0, java.lang.String param1) {
 		org.sakaiproject.assignment.api.AssignmentService service = getInstance();
 		if (service == null)
-			return new Vector();
+			return new ArrayList();
 
 		return service.getGroupsAllowGradeAssignment(param0, param1);
 	}
@@ -768,11 +767,17 @@ public class AssignmentService {
 		return service.canSubmit(param0, param1);
 	}
 	
-	public static List<String> getSubmitterIdList(String param0, String param1, String param2) {
+	public static List<String> getSubmitterIdList(String param0, String param1, String param2, String param3, String param4) {
 		org.sakaiproject.assignment.api.AssignmentService service = getInstance();
 		if (service == null)
 			return null;
 
-		return service.getSubmitterIdList(param0, param1, param2);
+		return service.getSubmitterIdList(param0, param1, param2, param3, param4);
 	}	
+	public static String escapeInvalidCharsEntry(java.lang.String param0) {
+		org.sakaiproject.assignment.api.AssignmentService service = getInstance();
+		if (service == null)
+			return null;
+		return service.escapeInvalidCharsEntry(param0);
+	}
 }

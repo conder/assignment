@@ -1,4 +1,7 @@
+<!-- $Id: chef_assignments_instructor_grading_submission.vm 94199 2011-06-28 20:59:16Z holladay@longsight.com $ -->
+<!-- start: check_assignments_instructor_grading_submission.vm  -->
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_grading_submission.vm,v 1.10 2005/06/03 15:32:15 zqian.umich.edu Exp $ -->
+#parse("/vm/assignment/assignment_macros.vm")
 <link href="/sakai-assignment-tool/css/assignment.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript">
 focus_path = [ '$fField' ];
@@ -49,7 +52,12 @@ function handleEnterKeyPress(ev)
 		#if ($allowUpdateSite)
 			<li #if ($prevAction==false) class="firstToolBarItem" #set($prevAction=true)  #end role="menuitem">
 				<span><a href="#" title="$tlang.getString('permis')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='permissions';document.gradeForm.submit();return false;">$tlang.getString('permis')</a></span>
-			</li>	
+			</li>
+			#if ($enableViewOption)	
+				<li #if ($prevAction==false) class="firstToolBarItem" #set($prevAction=true)  #end role="menuitem">
+					<span><a href="#" title="$tlang.getString('options')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='options';document.gradeForm.submit();return false;">$tlang.getString('options')</a></span>
+				</li>
+			#end	
 		#end
 	</ul>
 	## confirmation
@@ -240,9 +248,7 @@ function handleEnterKeyPress(ev)
 											<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 										#end
 										<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-										#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-											($props.getPropertyFormatted($props.NamePropContentLength))
-										#end
+										#propertyDetails($props)
 									</li>
 								#end
 							#end
@@ -278,9 +284,7 @@ function handleEnterKeyPress(ev)
 											<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 										#end
 										<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-										#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-											($props.getPropertyFormatted($props.NamePropContentLength))
-										#end
+										#propertyDetails($props)
 									</li>
 									#end
 							#end
@@ -324,9 +328,7 @@ function handleEnterKeyPress(ev)
 											<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 										#end
 										<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-										#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-											($props.getPropertyFormatted($props.NamePropContentLength))
-										#end
+										#propertyDetails($props)
 									</li>
 									#end
 							#end
@@ -390,9 +392,7 @@ function handleEnterKeyPress(ev)
 											<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 										#end
 										<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-										#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-											($props.getPropertyFormatted($props.NamePropContentLength))
-										#end
+										#propertyDetails($props)
 									</li>
 								#end
 							#end
@@ -450,9 +450,7 @@ function handleEnterKeyPress(ev)
 												<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 											#end
 											<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-											#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-												($props.getPropertyFormatted($props.NamePropContentLength))
-											#end
+											#propertyDetails($props)
 										</li>
 									#end
 								#end
@@ -487,9 +485,7 @@ function handleEnterKeyPress(ev)
 													<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 												#end
 												<a href="$prevAttachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-												#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-													($props.getPropertyFormatted($props.NamePropContentLength))
-												#end
+												#propertyDetails($props)
 											</li>
 										#end
 									#end
@@ -508,6 +504,7 @@ function handleEnterKeyPress(ev)
 *#
 						#if ($withGrade)
 							<div class="highlightPanel" style="width:80%">
+							#if ($allowToGrade)
 								#set ($gradeType = $assignment.getContent().TypeOfGrade)
 								#if ($gradeType == 1)
 									<p class="shorttext">
@@ -519,8 +516,8 @@ function handleEnterKeyPress(ev)
 									<p class="shorttext">
 										<label for="grade">$tlang.getString("gen.gra2")</label>
 										<select name="$name_grade" id="grade">
-											<option  value="" #if($!value_grade.equals(""))selected="selected"#end>ungraded</option>
-											#foreach ($i in ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "E", "F"])
+											<option  value="" #if($!value_grade.equals(""))selected="selected"#end>$tlang.getString("non.submission.grade.select")</option>
+											#foreach ($i in $letterGradeOptions)
 												<option  value="$i" #if ($!value_grade.equals($i))selected="selected"#end>$i</option>
 											#end
 										</select>
@@ -534,7 +531,7 @@ function handleEnterKeyPress(ev)
 									<p class="shorttext">
 										<label for="grade">$tlang.getString("gen.gra2")</label>
 										<select name="$name_grade" id="grade" >
-											<option  value="" #if($!value_grade.equals(""))selected="selected"#end>$tlang.getString("ungra")</option>
+											<option  value="" #if($!value_grade.equals(""))selected="selected"#end>$tlang.getString("non.submission.grade.select")</option>
 											#foreach ($i in ["Pass", "Fail"])
 													<option  value="$i" #if ($!value_grade.equalsIgnoreCase($i))selected="selected"#end>#if ($i=="Pass") $tlang.getString("pass") #elseif ($i=="Fail") $tlang.getString("fail") #end</option>
 											#end
@@ -545,6 +542,13 @@ function handleEnterKeyPress(ev)
 											<input name="$name_grade" type="checkbox" value="Checked" #if ($!value_grade.equals("Checked"))checked="checked"#end id="gradeChecked"  /> <label for="gradeChecked">$tlang.getString("gen.gra2") $tlang.getString("gen.checked")</label>
 									</p>	
 								#end
+							#else
+								## if not allowed to grade, show the current grade instead
+								<input name="$name_grade" type="hidden" value="$!value_grade" />
+								<div class="alertMessage">$!notAllowedToGradeWarning</div>
+								<label for="grade">$tlang.getString("gen.gra2")</label>
+								$!value_grade
+							#end
 							</div>	
 							## the previous grades
 								#set ($previousGrades =  $submission.Properties.getProperty($submission.Properties.getNamePropSubmissionScaledPreviousGrades()))
@@ -645,3 +649,4 @@ function handleEnterKeyPress(ev)
 		</div>	
 	</form>
 </div>
+<!-- end: check_assignments_instructor_grading_submission.vm  -->

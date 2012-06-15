@@ -1,5 +1,8 @@
+<!-- $Id: chef_assignments_instructor_new_edit_assignment.vm 106865 2012-04-12 06:53:21Z steve.swinsburg@gmail.com $ -->
+<!-- start: chef_assignments_instructor_new_edit_assignment.vm  -->
 ##<!-- $Header: Exp $ -->
 ## Assignments - Instructor new Assignment view
+#parse("/vm/assignment/assignment_macros.vm")
 <script type="text/javascript" src="/library/js/jquery.js"></script>
 ##<script type="text/javascript" src="/library/js/form.js"></script>
 <script type="text/javascript"  src="/sakai-assignment-tool/js/assignments.js"></script>
@@ -57,7 +60,8 @@ $(document).ready(function() {
 		{ 
 			obj_textfield.disabled = true;
 			obj_textfield.style.backgroundColor = '#eee';
-			document.getElementById('req-$name_GradePoints').style.display="none"
+			document.getElementById('req-$name_GradePoints').style.display="none";
+			document.getElementById('new_assignment_grade_points').value="";
 		}
 	}
 
@@ -158,7 +162,7 @@ $(document).ready(function() {
 					<label for="sectSelect">
 						$tlang.getString("gen.sect")
 					</label>
-					<select id="sectSelect" name="$name_Section" multiple="multiple" size = "3" onchange="blur()">
+					<select id="sectSelect" name="$name_Section" multiple="multiple" size="3">
 						#foreach ($i in ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "all"])
 							#if ($value_Sections.indexOf($i)!=-1)
 								<option value="$i" selected ="selected">$i</option>
@@ -505,17 +509,57 @@ $(document).ready(function() {
 				<div style="display:$!addToGBDisplay">
 				<div class="checkbox  indnt2" style="display:$!addToGBDisplay">
 					## hide the assignment list from Gradebook when clicked
-					<input type="radio" name="$!name_Addtogradebook" id="$!gradebookChoice_no" value="$!gradebookChoice_no" #if($!gradebookChoice.equals("$!gradebookChoice_no"))checked#end onclick="if (document.getElementById('gradebookList')) $('#gradebookList').fadeOut('slow');" >
+					<input type="radio" name="$!name_Addtogradebook" id="$!gradebookChoice_no" value="$!gradebookChoice_no" #if($!gradebookChoice.equals("$!gradebookChoice_no"))checked#end onclick="if (document.getElementById('gradebookList')) {$('#gradebookList').fadeOut('slow');$('#categoryList').fadeOut('slow');}" >
 					<label for="$!gradebookChoice_no">#if(!$!noAddToGradebookChoice)$tlang.getString("grading.no")#else$tlang.getString("grading.no2")#end</label>
 					<br/>
 					#if (!$!noAddToGradebookChoice)
 						## hide the assignment list from Gradebook when clicked
-						<input type="radio" name="$!name_Addtogradebook" id="$!gradebookChoice_add" value="$!gradebookChoice_add" #if($!gradebookChoice.equals("$!gradebookChoice_add"))checked#end onclick="if (document.getElementById('gradebookList')) $('#gradebookList').fadeOut('slow');" >
+						<input type="radio" name="$!name_Addtogradebook" id="$!gradebookChoice_add" value="$!gradebookChoice_add" #if($!gradebookChoice.equals("$!gradebookChoice_add"))checked#end 
+							onclick="
+							if ($('#new_assignment_grade_points').attr('value'))
+							{
+								if (document.getElementById('categoryList')) 
+								{
+									## show the gradebook assignment list
+									if (document.getElementById('gradebookList'))
+										$('#gradebookList').fadeOut('slow'); 
+									if($!value_totalCategories > 1) 
+										$('#categoryList').fadeIn('slow');
+								}
+								else
+								{
+									if (document.getElementById('gradebookList'))
+										$('#gradebookList').fadeOut('slow');
+									if (document.getElementById('associate'))
+										$('#associate').attr('checked',false);
+								}
+							}
+							else
+							{
+								## show alert since gradebook integration is only allowed for point-based assignment
+								$('#no').attr('checked',true);
+								if (document.getElementById('categoryList'))
+									$('#categoryList').fadeOut('slow');
+								if (document.getElementById('gradebookList'))
+									$('#gradebookList').fadeOut('slow');
+								if (document.getElementById('associate'))
+									$('#associate').attr('checked',false);
+								if (document.getElementById('gradebookListWarnAssoc'))
+								{
+					       	 		$('#gradebookListWarnAssoc' ).fadeIn('slow');
+					        		$('#gradebookListWarnAssoc').animate({opacity: 1.0}, 2500)
+					  				$('#gradebookListWarnAssoc' ).fadeOut('slow',function () 
+					  				{
+										$('#new_assignment_grade_type').focus();
+							      	});
+							     }
+							}" >
 						<label for="$!gradebookChoice_add">$tlang.getString("grading.add")</label>
+						<span id="gradebookListWarnAssoc" class="alertMessageInline" style="display:none;border:none">$tlang.getString("grading.associate.warn")</span>
 						<br/>
 					#end
 					## if there exists properiate assignment entries in Gradebook
-					#if ($!gradebookAssignments.size() > 0) 
+					#if (!$!gradebookAssignmentsLabel.isEmpty()) 
 						## show the assignment list from Gradebook when clicked
 							<input 
 								type="radio" 
@@ -527,22 +571,23 @@ $(document).ready(function() {
 								{
 									if ($('#new_assignment_grade_points').attr('value')) 
 									{
+										## show the gradebook assignment list
+										$('#categoryList').fadeOut('slow');
 										$('#gradebookList').fadeIn('slow');
-								
 									}
 									else
 									{
+										## show alert since gradebook integration is only allowed for point-based assignment
 										$('#no').attr('checked',true);
+										$('#categoryList').fadeOut('slow');
+										$('#gradebookList').fadeOut('slow');
 										$('#associate').attr('checked',false);
-						        $('#gradebookListWarn' ).fadeIn('slow');
-						        $('#gradebookListWarn').animate({
-						           opacity: 1.0
-      						  }, 2500)
-						  			$('#gradebookListWarn' ).fadeOut('slow',function () {
-//								        alert('a');
-												$('#new_assignment_grade_type').focus();
-								      });
-
+						       	 		$('#gradebookListWarn' ).fadeIn('slow');
+						        		$('#gradebookListWarn').animate({opacity: 1.0}, 2500)
+						  				$('#gradebookListWarn' ).fadeOut('slow',function () 
+						  				{
+											$('#new_assignment_grade_type').focus();
+								      	});
 									}	
 								}" >
 						<label for="$!gradebookChoice_associate">$tlang.getString("grading.associate")</label>
@@ -551,7 +596,7 @@ $(document).ready(function() {
 				</div>
 			</div>	
 			## if there exists properiate assignment entries in Gradebook
-			#if ($!gradebookAssignments.size() > 0) 
+			#if (!$!gradebookAssignmentsLabel.isEmpty()) 
 				## show the "Gradebook Assignment list" choices or not
 				#if($!allowGroupAssignmentsInGradebook && $!gradebookChoice.equals("$!gradebookChoice_associate"))
 					#set ($gbListDisplay="block")
@@ -561,14 +606,28 @@ $(document).ready(function() {
 				<p id="gradebookList" class="checkbox  indnt4" style="display:$gbListDisplay">
 					<select name="$!name_AssociateGradebookAssignment" >
 						<option  value="">$tlang.getString("grading.select")</option>
-						#foreach ($aAssignment in $!gradebookAssignments)
-							#if ($aAssignment.isExternallyMaintained())
-								## for external assignment
-								<option  value="$validator.escapeHtml($aAssignment.getExternalId())" #if($!associateGradebookAssignment.equals($aAssignment.getExternalId()))selected="selected"#end)>$validator.escapeHtml($aAssignment.Name)</option>
-							#else
-								## for internal assignment
-								<option  value="$validator.escapeHtml($aAssignment.Name)" #if($!associateGradebookAssignment.equals($aAssignment.Name))selected="selected"#end)>$validator.escapeHtml($aAssignment.Name)</option>
-							#end
+						#set($gAssignmentSet = $!gradebookAssignmentsLabel.keySet())
+						#foreach ($gaId in $!gAssignmentSet.iterator())
+							<option  value="$gaId" 
+								#if($!gradebookAssignmentsSelectedDisabled.get($gaId).equals("disabled")) 
+									disabled="disabled"
+								#elseif($!gradebookAssignmentsSelectedDisabled.get($gaId).equals("selected")) 
+									selected="selected"
+								#end>
+									$!gradebookAssignmentsLabel.get($gaId)
+							</option>
+						#end
+					</select>
+				</p>
+				
+				## show the "Category list" choices or not
+				<p id="categoryList" class="checkbox  indnt4" #if($!gradebookChoice.equals("$!gradebookChoice_add"))style="display:block" #else style="display:none" #end>
+					<label for="category">
+						$tlang.getString("grading.categorylist")
+					</label>
+					<select name="$name_Category" id="category">
+						#foreach ($i in $categoryKeys)
+							<option value="$i" #if ($i == $!value_Category)selected="selected"#end>$categoryTable.get($i)</option>
 						#end
 					</select>
 				</p>
@@ -622,7 +681,7 @@ $(document).ready(function() {
 			<table id="groupTable" style="width:80%;display:$listDisplay" class="listHier lines indnt3" border="0" cellpadding="0" cellspacing="0" summary="$tlang.getString('group.list.summary')">
 					<tr>
 						<th id ="selectAllGroups" style="width:2em;padding-left:.4em">
-							<input type="checkbox" name="selectall" id="selectall" title="toggle select all" onclick="javascript:toggleSelectAll(this, 'selectedGroups')"  />
+							<input type="checkbox" name="selectall" id="selectall" title="$tlang.getString('gen.toggle')" onclick="javascript:toggleSelectAll(this, 'selectedGroups')"  />
 						</th>
 						<th id ="groupname">
 								$tlang.getString('gen.title')
@@ -716,9 +775,7 @@ $(document).ready(function() {
 								<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 							#end
 							<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-							#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-								($props.getPropertyFormatted($props.NamePropContentLength))
-							#end
+							#propertyDetails($props)
 						</li>
 					#end
 				#end
@@ -849,9 +906,7 @@ $(document).ready(function() {
 									<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 								#end
 								<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-								#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-									($props.getPropertyFormatted($props.NamePropContentLength))
-								#end
+								#propertyDetails($props)
 							</li>
 						#end
 					#end
@@ -1025,9 +1080,7 @@ $(document).ready(function() {
 									<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 								#end
 								<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-								#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-									($props.getPropertyFormatted($props.NamePropContentLength))
-								#end
+								#propertyDetails($props)
 							</li>
 						#end
 					#end
@@ -1239,8 +1292,8 @@ $(document).ready(function() {
 				</tbody>
 			</table>	
 			<p class="act" style="margin:0;padding:0">
-				<input class="extraNodeInput" type="button" id="allPurpose_save" value="Save" class="active"/>
-				<input class="extraNodeInput" type="button" id ="allPurpose_cancel" value="Cancel" />
+				<input class="extraNodeInput" type="button" id="allPurpose_save" value="$tlang.getString("allPurpose_save")" class="active"/>
+				<input class="extraNodeInput" type="button" id ="allPurpose_cancel" value="$tlang.getString("allPurpose_cancel")" />
 			</p>
 		</fieldset>
 			<div class="act">
@@ -1275,3 +1328,4 @@ $(document).ready(function() {
 		-->
 	</script>
 </div>	
+<!-- end: chef_assignments_instructor_new_edit_assignment.vm  -->

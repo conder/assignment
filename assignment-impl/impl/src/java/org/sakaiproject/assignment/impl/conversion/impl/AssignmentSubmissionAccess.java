@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.7.x/assignment-impl/impl/src/java/org/sakaiproject/assignment/impl/conversion/impl/AssignmentSubmissionAccess.java $
- * $Id: AssignmentSubmissionAccess.java 72350 2010-01-24 18:25:01Z arwhyte@umich.edu $
+ * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.8.x/assignment-impl/impl/src/java/org/sakaiproject/assignment/impl/conversion/impl/AssignmentSubmissionAccess.java $
+ * $Id: AssignmentSubmissionAccess.java 84784 2010-11-16 16:29:19Z arwhyte@umich.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008 The Sakai Foundation
@@ -24,13 +24,9 @@ package org.sakaiproject.assignment.impl.conversion.impl;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
-import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -40,10 +36,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment.impl.conversion.api.SerializableSubmissionAccess;
 import org.sakaiproject.assignment.impl.conversion.impl.SAXSerializablePropertiesAccess;
-import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.serialize.EntityParseException;
 import org.sakaiproject.entity.api.serialize.SerializableEntity;
-import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.StringUtil;
 import org.sakaiproject.util.Xml;
 import org.w3c.dom.Document;
@@ -202,8 +196,9 @@ public class AssignmentSubmissionAccess implements SerializableSubmissionAccess,
 		
 		Map<String, Object> props = this.saxSerializableProperties.getSerializableProperties();
 		
-		for(String key : props.keySet())
+		for(Map.Entry<String, Object> entry : props.entrySet())
 		{
+			String key = entry.getKey();
 			Object value = props.get(key);
 			if (value instanceof String)
 			{

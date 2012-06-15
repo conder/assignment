@@ -1,4 +1,7 @@
+<!-- $Id: chef_assignments_instructor_preview_grading_submission.vm 94199 2011-06-28 20:59:16Z holladay@longsight.com $ -->
+<!-- start:  chef_assignments_instructor_preview_grading_submission.vm -->
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_preview_grading_submission.vm,v 1.5 2005/05/16 02:26:05 zqian.umich.edu Exp $ -->
+#parse("/vm/assignment/assignment_macros.vm")
 <div class="portletBody" xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"  xmlns:aaa="http://www.w3.org/2005/07/aaa">
 	<ul class="navIntraTool actionToolBar" role="menu">
 		#set($prevAction=false)
@@ -27,7 +30,12 @@
 		#if ($allowUpdateSite)
 			<li #if ($prevAction==false) class="firstToolBarItem" #set($prevAction=true)  #end role="menuitem">			
 				<span><a href="#toolLink("$action" "doPermissions")" title="$tlang.getString('permis')">$tlang.getString('permis')</a></span>
-			</li>	
+			</li>
+			#if ($enableViewOption)		
+				<li #if ($prevAction==false) class="firstToolBarItem" #set($prevAction=true)  #end  role="menuitem">
+					<span><a href="#toolLink("$action" "doOptions")" title="$tlang.getString('options')">$tlang.getString('options')</a></span>
+				</li>	
+			#end
 		#end
 	</ul>
 		<h3>$tlang.getString("gen.pre") $tlang.getString("gen.instrcomment") 	$tlang.getString("gen.to") 				$tlang.getString("gen.openquote")$validator.escapeHtml($assignment.title)$tlang.getString("gen.closequote")</h3>
@@ -130,9 +138,7 @@
 									<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 								#end
 								<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-								#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-									($props.getPropertyFormatted($props.NamePropContentLength))
-								#end
+								#propertyDetails($props)
 							</li>
 						#end
 					#end
@@ -169,9 +175,7 @@
 									<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 								#end
 								<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-								#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-									($props.getPropertyFormatted($props.NamePropContentLength))
-								#end
+								#propertyDetails($props)
 							</li>
 						#end
 					#end
@@ -205,9 +209,7 @@
 										<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 									#end
 									<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
-									#if (!$props.getBooleanProperty($props.NamePropIsCollection))
-										($props.getPropertyFormatted($props.NamePropContentLength))
-									#end
+									#propertyDetails($props)
 								</li>
 							#end
 						#end
@@ -241,3 +243,4 @@
 			</p>											
 		</form>
 </div>
+<!-- end:  chef_assignments_instructor_preview_grading_submission.vm -->

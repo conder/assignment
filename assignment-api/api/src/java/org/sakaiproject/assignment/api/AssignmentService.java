@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.7.x/assignment-api/api/src/java/org/sakaiproject/assignment/api/AssignmentService.java $
- * $Id: AssignmentService.java 92324 2011-04-26 21:11:42Z zqian@umich.edu $
+ * $URL: https://source.sakaiproject.org/svn/assignment/branches/sakai-2.8.x/assignment-api/api/src/java/org/sakaiproject/assignment/api/AssignmentService.java $
+ * $Id: AssignmentService.java 107093 2012-04-16 00:54:36Z steve.swinsburg@gmail.com $
  ***********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008 The Sakai Foundation
@@ -817,10 +817,14 @@ public interface AssignmentService extends EntityProducer
 	
 	/**
 	 * get appropriate submitter id list with group choice and site id
+	 * @param searchFilterOnly If true, return only those ids that matches the group filter and search criteria
 	 * @param allOrOneGroup "all" or specific group reference
 	 * @param aRef Assignment Reference
+	 * @param search The search string
 	 * @param contextString Site id
 	 * @return
 	 */
-	public List<String> getSubmitterIdList(String allOrOneGroup, String aRef, String contextString);	
+	public List<String> getSubmitterIdList(String searchFilterOnly, String allOrOneGroup, String search, String aRef, String contextString);	
+
+	public String escapeInvalidCharsEntry(String accentedString);
 }
