@@ -163,8 +163,8 @@ function submitform(id)
 						$tlang.getString("gen.title")
 					</th>
 					<td>
-						$validator.escapeHtml($assignment.getTitle())
-                                                #assignmentTitleIcon($assignment)
+						#assignmentTitleIcon($assignment)
+                                                $validator.escapeHtml($assignment.getTitle())
 						#set ($deleted = false)
 						#set ($deleted = $assignment.getProperties().getProperty($assignment.getProperties().getNamePropAssignmentDeleted()))
 						#if ($!deleted.equalsIgnoreCase("true"))

@@ -80,8 +80,8 @@ function handleEnterKeyPress(ev)
 		         style="width:70%;line-height:1.4em">
 				 		
 				<h3>
-					$validator.escapeHtml($!assignment_title)
                                         #assignmentTitleIcon($assignment)
+					$validator.escapeHtml($!assignment_title)
 					<span class="highlight"> - 
 					#if ($withGrade)
 						#if (!$!submission.getGraded())

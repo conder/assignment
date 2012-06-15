@@ -10581,7 +10581,7 @@ public class AssignmentAction extends PagedResourceActionII
 
 			} else {
 
-			List<String> submitterIds = AssignmentService.getSubmitterIdList("false",allOrOneGroup,"", aRef, contextString);
+			List<String> submitterIds = AssignmentService.getSubmitterIdList(searchFilterOnly.toString(), allOrOneGroup, search, aRef, contextString);
 
 			// construct the user-submission list
 			if (submitterIds != null && !submitterIds.isEmpty())
@@ -13240,9 +13240,9 @@ public class AssignmentAction extends PagedResourceActionII
 				FORM_SEARCH));
 
 		// set the flag to go to the prev page on the next list
-		if (search == null) {
+		if (search == null) {                    
 			state.removeAttribute(STATE_SEARCH);
-		} else {
+		} else {                   
 			state.setAttribute(STATE_SEARCH, search);
 		}
 

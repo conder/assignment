@@ -55,8 +55,8 @@
 						$tlang.getString("gen.title")
 					</th>
 					<td valign="top">
-                                            $validator.escapeHtml($assignment.title)
                                             #assignmentTitleIcon($assignment)
+                                            $validator.escapeHtml($assignment.title)
 					</td>
 				</tr>
 				#if ($!assignment.isGroup())

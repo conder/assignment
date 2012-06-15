@@ -87,8 +87,8 @@
 					$tlang.getString('assignment')
 				</th>
 				<td>
-					$validator.escapeHtml($!assignment_title)
                                         #assignmentTitleIcon($assignment)
+					$validator.escapeHtml($!assignment_title)
 				</td>
 			</tr>
 			##submission id

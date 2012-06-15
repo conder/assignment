@@ -206,8 +206,8 @@
                                                                 #end							
 							</td>
 							<td headers="assignment">
-								$validator.escapeHtml($validator.limit($assignment.Title, 40))
                                                                 #assignmentTitleIcon($assignment)
+								$validator.escapeHtml($validator.limit($assignment.Title, 40))
 							</td>
 							<td headers="grade">
 								#if ($submission.getSubmission())
