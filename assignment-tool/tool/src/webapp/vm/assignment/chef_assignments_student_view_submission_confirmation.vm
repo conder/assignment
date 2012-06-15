@@ -1,9 +1,13 @@
-<!-- $Id: chef_assignments_student_view_submission_confirmation.vm 94199 2011-06-28 20:59:16Z holladay@longsight.com $ -->
+<!-- $Id$ -->
 <!-- start:  chef_assignments_student_view_submission_confirmation.vm  -->
 #parse("/vm/assignment/assignment_macros.vm")
 ## showing the submission confirmation page
+<link href="/sakai-assignment-tool/css/assignment.css" type="text/css" rel="stylesheet" media="all" />
 <div class="portletBody">
 	<h3>
+                #if ($!assignment.isGroup())
+                        $tlang.getString('gen.group')  
+                #end
 		#if ($!submitted)
 			$tlang.getString('confirm.submission.title')
 		#else
@@ -17,9 +21,9 @@
 		$tlang.getString('confirm.savesubmission.success')
 	#end
 	#if ($!email_confirmation && $!submitted)	 
-  #if ($!user_email)	 
-  	$tlang.getString('confirm.submission.email')
-	#end
+            #if ($!user_email)	 
+                $tlang.getString('confirm.submission.email')
+            #end
 	#end
 </div>
 	#if ($!email_confirmation && $!submitted)	 
@@ -40,6 +44,34 @@
 					$validator.escapeHtml($!user_name) #if($!user_id)($!user_id)#end
 				</td>
 			</tr>
+
+			#if ($!assignment.isGroup() ) 
+			<tr>
+                                <th>
+                                        $tlang.getString('gen.group'):
+                                </th>
+                                <td>
+                                        #set($aGroup = $!site.getGroup($submission.getSubmitterId()))
+                                        #if ($aGroup)
+                                                $aGroup.getTitle()
+                                        #else
+                                              $tlang.getString('group.submission.not.found')
+                                        #end
+                                </td>
+                        </tr>
+                        <tr>
+                                <th>
+                                        $tlang.getString('gen.students'):
+                                </th>
+                                <td>
+					#set ($submitters = $submission.submitters)
+					#foreach ($submitter in $submitters)
+							$validator.escapeHtml($submitter.DisplayName)<br />
+					#end
+                                </td>
+                        </tr>
+			#end
+
 			##site
 			<tr>
 				<th>
@@ -56,6 +88,7 @@
 				</th>
 				<td>
 					$validator.escapeHtml($!assignment_title)
+                                        #assignmentTitleIcon($assignment)
 				</td>
 			</tr>
 			##submission id
@@ -82,6 +115,16 @@
 					</td>
 				</tr>
 			#end
+                                #if ($!submission && $!submission.getSubmissionLog().size() > 0)
+                                        <tr>
+                                                <th>History</th>
+                                                <td>
+                                                        #foreach ($entry in $submission.getSubmissionLog())
+                                                                $entry<br>
+                                                        #end
+                                                </td>
+                                        </tr>
+                                #end
 		</table>
 		<h4>
 			#if ($!submitted)

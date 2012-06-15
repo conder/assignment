@@ -1,4 +1,4 @@
-<!-- $Id: chef_assignments_student_view_grade.vm 94199 2011-06-28 20:59:16Z holladay@longsight.com $ -->
+<!-- $Id$ -->
 <!-- start: chef_assignments_student_view_grade.vm  -->
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_student_view_grade.vm,v 1.2 2005/05/19 19:39:49 gsilver.umich.edu Exp $ -->
 #parse("/vm/assignment/assignment_macros.vm")
@@ -32,8 +32,13 @@
 	#end
 	<h3>
 	$validator.escapeHtml($assignment.getTitle())
+                        #if ($!assignment.isGroup() )
+                           <span> - $tlang.getString("gen.groupassignment") </span>
+                        #end
 			#if ($submission.Returned)
 						<span class="highlight"> - $tlang.getString("gen.returned")</span>
+                        #elseif (!$submission.getSubmitted())
+                                <span class="highlight"> - $submission.getStatus() </span>
 			#elseif (!$!nonElectronicType)
 				<span class="highlight"> - $tlang.getString("gen.subm4")</span>
 			#end
@@ -50,12 +55,32 @@
 						$tlang.getString("gen.title")
 					</th>
 					<td valign="top">
-						$validator.escapeHtml($assignment.title)
+                                            $validator.escapeHtml($assignment.title)
+                                            #assignmentTitleIcon($assignment)
 					</td>
 				</tr>
+				#if ($!assignment.isGroup())
 				<tr>
 					<th>
+						$tlang.getString('gen.group')
+                                 	</th>
+                                        <td>
+                                        #set($aGroup = $!site.getGroup($submission.getSubmitterId()))
+                                        #if ($aGroup)
+                                                $aGroup.getTitle()
+                                        #else
+                                                $tlang.getString("group.submission.not.found")
+                                        #end
+                                        </td>
+                                </tr>
+				#end
+				<tr>
+					<th>
+                                                #if ($!assignment.isGroup() )
+                                                    $tlang.getString("gen.students")
+                                                #else
 						$tlang.getString("gen.student")
+                                                #end
 				 </th>
 					<td>
 						#if (!$privateView)
@@ -129,7 +154,16 @@
 				
 					</tr>
 				#end
-			
+			        #if ($!submission && $!submission.getSubmissionLog().size() > 0)
+                                        <tr>
+                                                <th>$tlang.getString("gen.history")</th>
+                                                <td>
+                                                        #foreach ($entry in $submission.getSubmissionLog())
+                                                                $entry<br>
+                                                        #end
+                                                </td>
+                                        </tr>
+                                #end
 			</table>
 		#if($assignment.getContent().AllowReviewService && $assignment.getContent().AllowStudentViewReport)
 			<div id="report" style='display:none'>$submission.getReviewReport()</div>

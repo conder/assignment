@@ -1,7 +1,9 @@
-<!-- $Id: chef_assignments_list_assignments.vm 94199 2011-06-28 20:59:16Z holladay@longsight.com $ -->
+<!-- $Id$ -->
 <!-- start: chef_assignments_list_assignments.vm  -->
 ##<!-- $Header: Exp $ -->
 ## Assignments - list view
+#parse("/vm/assignment/assignment_macros.vm")
+<link href="/sakai-assignment-tool/css/assignment.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" language="JavaScript">
   focus_path = ["search"];
 </script>
@@ -181,7 +183,7 @@ function allowClick(object)
 							#end 
 						</a>
 					</th>
-					#if ($!groups)
+					#if ($!groups && $!allowGradeSubmission)
 						##only show it when there is at least a group in site
 						<th id="$tlang.getString('gen.visible')">
 							#if (!$sortedBy.equalsIgnoreCase("$tlang.getString('gen.visible')"))
@@ -331,6 +333,7 @@ function allowClick(object)
 											#end
 												$validator.escapeHtml($validator.limit($!assignment.getTitle(), 64))
 											</a>
+                                                                                        #assignmentTitleIcon($assignment)
 										</h4>
 										<div class="itemAction">
 											#set($prevAction=false)
@@ -375,8 +378,10 @@ function allowClick(object)
 													<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$validator.escapeUrl($submission.Reference)")">
 												#end
 												$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a>
+                                                                                                #assignmentTitleIcon($assignment)
 											#else
 												$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))
+                                                                                                #assignmentTitleIcon($assignment)
 												#if ($!allowSubmit)
 													<div class="itemAction">
 														<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
@@ -400,12 +405,18 @@ function allowClick(object)
 													## if not submitted or returned and still allowed to submit within the due time
 													#if ($service.canSubmit($assignment.getContext(), $assignment))
 														## go to view submission page when (1) submission has been returned and allow for resubmit;(2)submission has not been posted yet.
-														<h4><a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a></h4>
-													#else
-														<h4><a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$validator.escapeUrl($submission.Reference)")">$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a></h4>														
+														<h4><a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a>
+                                                                                                                #assignmentTitleIcon($assignment)
+                                                                                                                </h4>
+												#else
+														<h4><a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$validator.escapeUrl($submission.Reference)")">$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a>
+                                                                                                                #assignmentTitleIcon($assignment)
+                                                                                                                </h4>														
 													#end
 												#else
-												 <h4><a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a></h4>
+												 <h4><a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a>
+                                                                                                 #assignmentTitleIcon($assignment)
+                                                                                                 </h4>
 												#end
 												#if ($taggable && $allowAddAssignment)
 													<div class="itemAction">
@@ -472,7 +483,9 @@ function allowClick(object)
 										#end
 									#end
 								#end
-									$!for
+								<span title="$validator.escapeHtml($!for)" alt="$validator.escapeHtml($!for)">
+								$validator.escapeHtml($validator.limit($!for, 40))
+								</span>
 							</td>
 							#end
 							<td headers="status">
@@ -481,6 +494,11 @@ function allowClick(object)
 								#else
 									#if ($!submission)
 										$submission.getStatus()
+										#if ($submission.getSubmitted()) 
+											#if ($assignment.getDueTime() && $submission.getTimeSubmitted() && $submission.getTimeSubmitted().after($assignment.getDueTime()))
+                                                                                        	<span class="highlight">$tlang.getString("gen.late2")</span>
+                                                                                	#end
+										#end
 									#else
 										$tlang.getString("gen.notsta")
 									#end

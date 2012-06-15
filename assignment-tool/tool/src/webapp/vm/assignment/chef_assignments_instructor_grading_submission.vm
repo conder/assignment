@@ -1,4 +1,4 @@
-<!-- $Id: chef_assignments_instructor_grading_submission.vm 94199 2011-06-28 20:59:16Z holladay@longsight.com $ -->
+<!-- $Id$ -->
 <!-- start: check_assignments_instructor_grading_submission.vm  -->
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_grading_submission.vm,v 1.10 2005/06/03 15:32:15 zqian.umich.edu Exp $ -->
 #parse("/vm/assignment/assignment_macros.vm")
@@ -80,7 +80,8 @@ function handleEnterKeyPress(ev)
 		         style="width:70%;line-height:1.4em">
 				 		
 				<h3>
-					$validator.escapeHtml($assignment.title)
+					$validator.escapeHtml($!assignment_title)
+                                        #assignmentTitleIcon($assignment)
 					<span class="highlight"> - 
 					#if ($withGrade)
 						#if (!$!submission.getGraded())
@@ -120,7 +121,23 @@ function handleEnterKeyPress(ev)
 					$validator.escapeHtml($assignment.title)
 				</td>
 			</tr>
-*#			<tr>
+*#			
+			#if ($assignment.isGroup())
+                        <tr>
+				<th>
+                                        $tlang.getString("gen.group")
+                                </th>
+                                <td>
+                                        #set($aGroup = $!site.getGroup($submission.getSubmitterId()))
+                                        #if ($aGroup)
+                                                $aGroup.getTitle()
+                                        #else
+                                                $tlang.getString('group.submission.not.found')
+                                        #end
+                                </td>
+                        </tr>
+                        #end
+			<tr>
 				<th>
 					$tlang.getString("gen.student")
 				</th>	
@@ -138,7 +155,7 @@ function handleEnterKeyPress(ev)
 					## replace it with submitter sort names
 					#set ($count = 1)
 					#foreach ($submitter in $submission.submitters)
-						#set($submitterName = $submitter.getSortName())
+						#set($submitterName = $submitter.getDisplayName())
 						#set($submitterId = $submitter.getDisplayId())
 						#if ($!submitterId)
 							##attach the displayId
@@ -202,6 +219,16 @@ function handleEnterKeyPress(ev)
 				
 					</tr>
 				#end			
+                                #if ($!submission && $!submission.getSubmissionLog().size() > 0)
+					<tr>
+						<th>$tlang.getString('gen.history')</th>
+						<td>
+							#foreach ($entry in $submission.getSubmissionLog())
+								$entry<br>
+							#end
+						</td>
+					</tr>
+				#end
 		</table>
 		## show or hide assignment instruction and attachment
 			#if ($assignment_expand_flag)

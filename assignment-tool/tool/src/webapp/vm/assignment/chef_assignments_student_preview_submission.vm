@@ -1,4 +1,4 @@
-<!-- $Id: chef_assignments_student_preview_submission.vm 94199 2011-06-28 20:59:16Z holladay@longsight.com $ -->
+<!-- $Id$ -->
 <!-- start: chef_assignments_student_preview_submission.vm -->
 #parse("/vm/assignment/assignment_macros.vm")
 <div class="portletBody">
@@ -15,6 +15,7 @@
 			</th>
 			<td>
 				$validator.escapeHtml($assignment.getTitle())
+                                #assignmentTitleIcon($assignment)
 			</td>
 		</tr>
 		<tr>

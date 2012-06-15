@@ -1,4 +1,4 @@
-<!-- $Id: chef_assignments_instructor_view_assignment.vm 94199 2011-06-28 20:59:16Z holladay@longsight.com $ -->
+<!-- $Id$ -->
 <!-- start: chef_assignments_instructor_view_assignment.vm  -->
 #parse("/vm/assignment/assignment_macros.vm")
 <div class="portletBody" xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"  xmlns:aaa="http://www.w3.org/2005/07/aaa">
@@ -92,6 +92,39 @@
 					</td>
 				</tr>
 			#end
+			<tr> 
+				<th>
+					$tlang.getString("gen.groupassignment")
+				</th>
+				<td>
+					#if ($assignment.isGroup())
+					$tlang.getString("gen.yes")
+					#else
+					$tlang.getString("gen.no")
+					#end
+				</td>
+			</tr>
+                        <tr>
+                                <th>
+                                    $tlang.getString("gen.visible")
+                                </th>
+                                <td>
+                                    #set($count=1)
+                                    #set($for="")
+                                    #foreach ($group in $assignment.Groups)
+					#set($groupFound=false)
+					#set($groupFound=$!site.getGroup($group))
+					#if($!groupFound)
+                                            #if ($count>1)
+						#set($for=$for.concat(", "))
+                                            #end
+                                            #set($for= $for.concat($validator.escapeHtml($groupFound.Title)))
+                                            #set($count=$count+1)
+					#end
+                                    #end
+                                    $validator.escapeHtml($!for)
+                                </td>
+                        </tr>
 			<tr> 
 				<th>
 					$tlang.getString("gen.stusub")
