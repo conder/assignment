@@ -27,3 +27,15 @@
 		padding:.3em 0;
 		border-bottom:2px solid #ccc
 	}
+/* added by conder 2/2012 */
+.group_icon {
+            padding: 0 16px 0 6px;
+            white-space: nowrap;
+            background: url(/library/image/silk/group.png) center right no-repeat;
+}
+/* added by conder 2/2012 */
+.user_icon {
+            padding: 0 16px 0 6px;
+            white-space: nowrap;
+            background: url(/library/image/silk/user.png) center right no-repeat;
+}

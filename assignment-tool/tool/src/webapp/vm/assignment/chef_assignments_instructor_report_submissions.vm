@@ -1,4 +1,5 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_report_submissions.vm,v 1.6 2005/06/03 15:38:27 gsilver.umich.edu Exp $ -->
+<link href="/sakai-assignment-tool/css/assignment.css" type="text/css" rel="stylesheet" media="all" />
 <div class="portletBody" xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"  xmlns:aaa="http://www.w3.org/2005/07/aaa">
 	<ul class="navIntraTool actionToolBar" role="menu">
 		#set($prevAction=false)
@@ -187,12 +188,12 @@
 								## replace it with submitter sort names
 								#set ($count = 1)
 								#foreach ($submitter in $submission.submitters)
-									#set($submitterName = $submitter.getSortName())
+									#set($submitterName = $submitter.getDisplayName())
 									#set($submitterId=$!submitter.getDisplayId())
-									#if ($!submitterId)
+									##if ($!submitterId)
 										##attach the displayId
-									#set($submitterName=$submitterName.concat("(").concat($submitterId).concat(")"))
-									#end
+										##set($submitterName=$submitterName.concat("(").concat($submitterId).concat(")"))
+									##end
 									#if ($!submitterName)
 										#if ($count == 1)
 											#set ($submitterNames = $!submitterName)
@@ -202,10 +203,25 @@
 									#end
 									#set ($count = $count + 1)
 								#end
-								$validator.escapeHtml($!submitterNames)
+								#if ($assignment.isGroup()) 
+									#set($aGroup = $!site.getGroup($submission.getSubmitterId()))
+                                        				#if ($aGroup)
+                                                				$validator.escapeHtml($aGroup.getTitle())
+                                        				#else
+                                               					$tlang.getString("group.submission.not.found")
+                                        				#end
+									<div style="font-size: smaller;color: blue;">$validator.escapeHtml($!submitterNames)</div>
+								#else
+									$validator.escapeHtml($!submitterNames)
+								#end
 							</td>
 							<td headers="assignment">
 								$validator.escapeHtml($validator.limit($assignment.Title, 40))
+                                        #if ($!assignment.isGroup() )
+                                           <span class="group_icon" title="$tlang.getString('gen.groupassignment')" alt="$tlang.getString('gen.groupassignment')"></span>
+                                        #else
+                                           <span class="user_icon" title="$tlang.getString('gen.userassignment')" alt="$tlang.getString('gen.userassignment')"></span>
+                                        #end
 							</td>
 							<td headers="grade">
 								#if ($!submission)

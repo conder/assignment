@@ -1,5 +1,6 @@
 ##<!-- $Header: Exp $ -->
 ## Assignments - list view
+<link href="/sakai-assignment-tool/css/assignment.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" language="JavaScript">
   focus_path = ["search"];
 </script>
@@ -61,8 +62,8 @@ function allowClick(object)
 		#if ($allowUpdateSite)
 			<li #if ($prevAction==false) class="firstToolBarItem" #set($prevAction=true)  #end  role="menuitem">
 				<span><a href="#toolLink("$action" "doPermissions")" title="$tlang.getString('permis')">$tlang.getString('permis')</a></span>
-			</li>	
-		#end
+			</li>
+			#end	
 	</ul>
 	#end
 	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div class="clear"></div>#end
@@ -174,7 +175,7 @@ function allowClick(object)
 							#end 
 						</a>
 					</th>
-					#if ($!groups)
+					#if ($!groups && $!allowGradeSubmission)
 						##only show it when there is at least a group in site
 						<th id="$tlang.getString('gen.visible')">
 							#if (!$sortedBy.equalsIgnoreCase("$tlang.getString('gen.visible')"))
@@ -310,7 +311,7 @@ function allowClick(object)
 									&nbsp;
 								#end
 							</td>
-							<td headers="title">
+							<td headers="title"> 
 									#if (($!allowAddAssignment || $!allowUpdateAssignment || $!service.allowGradeSubmission($assignment.getReference())) && $!view.equals('lisofass1'))
 										<h4>
 											## normal instructor view
@@ -324,6 +325,11 @@ function allowClick(object)
 											#end
 												$validator.escapeHtml($validator.limit($!assignment.getTitle(), 64))
 											</a>
+                                        #if ($!assignment.isGroup() )
+                                           <span class="group_icon" title="$tlang.getString('gen.groupassignment')" alt="$tlang.getString('gen.groupassignment')"></span>
+                                        #else
+                                           <span class="user_icon" title="$tlang.getString('gen.userassignment')" alt="$tlang.getString('gen.userassignment')"></span>
+                                        #end
 										</h4>
 										<div class="itemAction">
 											#set($prevAction=false)
@@ -368,8 +374,18 @@ function allowClick(object)
 													<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$validator.escapeUrl($submission.Reference)")">
 												#end
 												$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a>
+                                        #if ($!assignment.isGroup() )
+                                           <span class="group_icon" title="$tlang.getString('gen.groupassignment')" alt="$tlang.getString('gen.groupassignment')"></span>
+                                        #else
+                                           <span class="user_icon" title="$tlang.getString('gen.userassignment')" alt="$tlang.getString('gen.userassignment')"></span>
+                                        #end
 											#else
 												$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))
+                                        #if ($!assignment.isGroup() )
+                                           <span class="group_icon" title="$tlang.getString('gen.groupassignment')" alt="$tlang.getString('gen.groupassignment')"></span>
+                                        #else
+                                           <span class="user_icon" title="$tlang.getString('gen.userassignment')" alt="$tlang.getString('gen.userassignment')"></span>
+                                        #end
 												#if ($!allowSubmit)
 													<div class="itemAction">
 														<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
@@ -393,12 +409,30 @@ function allowClick(object)
 													## if not submitted or returned and still allowed to submit within the due time
 													#if ($service.canSubmit($assignment.getContext(), $assignment))
 														## go to view submission page when (1) submission has been returned and allow for resubmit;(2)submission has not been posted yet.
-														<h4><a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a></h4>
+														<h4><a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a>
+                                        #if ($!assignment.isGroup() )
+                                           <span class="group_icon" title="$tlang.getString('gen.groupassignment')" alt="$tlang.getString('gen.groupassignment')"></span>
+                                        #else
+                                           <span class="user_icon" title="$tlang.getString('gen.userassignment')" alt="$tlang.getString('gen.userassignment')"></span>
+                                        #end
+                                                                                                                </h4>
 													#else
-														<h4><a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$validator.escapeUrl($submission.Reference)")">$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a></h4>														
+														<h4><a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$validator.escapeUrl($submission.Reference)")">$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a>
+                                        #if ($!assignment.isGroup() )
+                                           <span class="group_icon" title="$tlang.getString('gen.groupassignment')" alt="$tlang.getString('gen.groupassignment')"></span>
+                                        #else
+                                           <span class="user_icon" title="$tlang.getString('gen.userassignment')" alt="$tlang.getString('gen.userassignment')"></span>
+                                        #end
+                                                                                                                </h4>														
 													#end
 												#else
-												 <h4><a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a></h4>
+												 <h4><a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">$validator.escapeHtml($validator.limit($assignment.getTitle(), 40))</a>
+                                        #if ($!assignment.isGroup() )
+                                           <span class="group_icon" title="$tlang.getString('gen.groupassignment')" alt="$tlang.getString('gen.groupassignment')"></span>
+                                        #else
+                                           <span class="user_icon" title="$tlang.getString('gen.userassignment')" alt="$tlang.getString('gen.userassignment')"></span>
+                                        #end
+                                                                                                 </h4>
 												#end
 												#if ($taggable && $allowAddAssignment)
 													<div class="itemAction">
@@ -442,7 +476,7 @@ function allowClick(object)
 										#end
 									#end
 							</td>
-							#if ($!groups)
+							#if ($!groups && $!allowGradeSubmission)
 							<td  style="padding-bottom:0">
 								## only show it when there is at least one group
 								## assignment range
@@ -465,7 +499,9 @@ function allowClick(object)
 										#end
 									#end
 								#end
-									$!for
+								<span title="$validator.escapeHtml($!for)" alt="$validator.escapeHtml($!for)">
+								$validator.escapeHtml($validator.limit($!for, 40))
+								</span>
 							</td>
 							#end
 							<td headers="status">
@@ -473,7 +509,12 @@ function allowClick(object)
 								   $!assignment.getStatus()
 								#else
 									#if ($!submission)
-										$submission.getStatus()
+										$submission.getStatus() 
+										#if ($submission.getSubmitted()) 
+											#if ($assignment.getDueTime() && $submission.getTimeSubmitted() && $submission.getTimeSubmitted().after($assignment.getDueTime()))
+                                                                                        	<span class="highlight">$tlang.getString("gen.late2")</span>
+                                                                                	#end
+										#end
 									#else
 										$tlang.getString("gen.notsta")
 									#end

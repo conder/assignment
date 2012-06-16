@@ -25,8 +25,8 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
-
-import org.sakaiproject.assignment.api.Assignment;
+import java.util.Collection;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.component.cover.ComponentManager;
 
 /**
@@ -580,7 +580,18 @@ public class AssignmentService {
 
 		return service.getSubmission(param0, param1);
 	}
-	
+        
+        public static org.sakaiproject.assignment.api.AssignmentSubmission getSubmission(
+			java.lang.String param0, java.lang.String param1)
+			throws org.sakaiproject.exception.IdUnusedException,
+			org.sakaiproject.exception.PermissionException {
+		org.sakaiproject.assignment.api.AssignmentService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.getSubmission(param0, param1);
+	}
+                
 	public static org.sakaiproject.assignment.api.AssignmentSubmission getSubmission(
 			java.util.List param0, org.sakaiproject.user.api.User param1) {
 		org.sakaiproject.assignment.api.AssignmentService service = getInstance();
@@ -752,6 +763,14 @@ public class AssignmentService {
 		return service.getAllowGroupAssignments();
 	}
 
+	public static List getSortedGroupUsers(Group _g) {
+		org.sakaiproject.assignment.api.AssignmentService service = getInstance();
+                if (service == null)
+                        return new java.util.ArrayList();
+
+                return service.getSortedGroupUsers(_g);
+	}
+
 	public static boolean getAllowGroupAssignmentsInGradebook() {
 		org.sakaiproject.assignment.api.AssignmentService service = getInstance();
 		if (service == null)
@@ -767,12 +786,16 @@ public class AssignmentService {
 
 		return service.canSubmit(param0, param1);
 	}
-	
-	public static List<String> getSubmitterIdList(String param0, String param1, String param2) {
+	public static Collection<Group> getSubmitterGroupList(String param0, String param1, String param2, String param3, String param4) {
+		org.sakaiproject.assignment.api.AssignmentService service = getInstance();
+		if (service == null) return null;
+		return service.getSubmitterGroupList(param0, param1, param2, param3, param4);
+	}
+	public static List<String> getSubmitterIdList(String param0, String param1, String param2, String param3, String param4) {
 		org.sakaiproject.assignment.api.AssignmentService service = getInstance();
 		if (service == null)
 			return null;
 
-		return service.getSubmitterIdList(param0, param1, param2);
+		return service.getSubmitterIdList(param0, param1, param2, param3, param4);
 	}	
 }

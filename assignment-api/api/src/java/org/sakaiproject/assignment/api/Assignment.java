@@ -117,6 +117,14 @@ public interface Assignment extends Entity, Comparable
 	// send student email notification when the grade is released
 	public static final String ASSIGNMENT_RELEASEGRADE_NOTIFICATION_EACH = "assignment_releasegrade_notification_each";
 
+        
+        /**
+	 * Access if this is a group submission type of this Assignment.
+	 * 
+	 * @return The Assignment's AssignmentContent.
+	 */
+	public boolean isGroup();
+                
 	/**
 	 * Access the AssignmentContent of this Assignment.
 	 * 
@@ -151,6 +159,20 @@ public interface Assignment extends Entity, Comparable
 	 * @return The Time at which the Assignment is due, or null if unspecified.
 	 */
 	public Time getDueTime();
+
+        /**
+         * Access the time at which the assignment is visible; may be null.
+         *
+         * @return The Time at which the Assignment is visible, or null if unspecified.
+         */
+        public Time getVisibleTime();
+
+	/**
+ 	 * Access the time at which the assignment is visible; (String)
+	 *
+	 * @return The Time at which the Assignment is visible
+	 */
+	public String getVisibleTimeString();
 
 	/**
 	 * Access the time at which the assignment is due; (String)
@@ -277,7 +299,7 @@ public interface Assignment extends Entity, Comparable
 	 * 
 	 * @return The AssignmentAccess access mode for the Assignment.
 	 */
-	AssignmentAccess getAccess();
+	Assignment.AssignmentAccess getAccess();
 
 	/**
 	 * <p>
@@ -306,9 +328,9 @@ public interface Assignment extends Entity, Comparable
 		}
 
 		/** channel (site) level access to the message */
-		public static final AssignmentAccess SITE = new AssignmentAccess("site");
+		public static final AssignmentAccess SITE = new Assignment.AssignmentAccess("site");
 
 		/** grouped access; only members of the getGroup() groups (authorization groups) have access */
-		public static final AssignmentAccess GROUPED = new AssignmentAccess("grouped");
+		public static final AssignmentAccess GROUPED = new Assignment.AssignmentAccess("grouped");
 	}
 }

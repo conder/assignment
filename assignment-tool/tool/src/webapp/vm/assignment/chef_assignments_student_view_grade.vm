@@ -28,9 +28,14 @@
 		#end
 	#end
 	<h3>
-	$validator.escapeHtml($assignment.getTitle())
+                        $validator.escapeHtml($assignment.getTitle())
+                        #if ($!assignment.isGroup() )
+                           <span> - $tlang.getString("gen.groupassignment") </span>
+                        #end
 			#if ($submission.Returned)
-						<span class="highlight"> - $tlang.getString("gen.returned")</span>
+				<span class="highlight"> - $tlang.getString("gen.returned")</span>
+                        #elseif (!$submission.getSubmitted())
+                                <span class="highlight"> - $submission.getStatus() </span>
 			#elseif (!$!nonElectronicType)
 				<span class="highlight"> - $tlang.getString("gen.subm4")</span>
 			#end
@@ -48,11 +53,35 @@
 					</th>
 					<td valign="top">
 						$validator.escapeHtml($assignment.title)
+                                        #if ($!assignment.isGroup() )
+                                           <span class="group_icon" title="$tlang.getString('gen.groupassignment')" alt="$tlang.getString('gen.groupassignment')"></span>
+                                        #else
+                                           <span class="user_icon" title="$tlang.getString('gen.userassignment')" alt="$tlang.getString('gen.userassignment')"></span>
+                                        #end
 					</td>
 				</tr>
+				#if ($!assignment.isGroup())
+				 <tr>
+                                        <th>
+						$tlang.getString('gen.group')
+                                 	</th>
+                                        <td>
+                                        #set($aGroup = $!site.getGroup($submission.getSubmitterId()))
+                                        #if ($aGroup)
+                                                $aGroup.getTitle()
+                                        #else
+                                                $tlang.getString("group.submission.not.found")
+                                        #end
+                                        </td>
+                                </tr>
+				#end
 				<tr>
 					<th>
-						$tlang.getString("gen.student")
+                                                #if ($!assignment.isGroup() )
+                                                    $tlang.getString("gen.students")
+                                                #else
+                                                    $tlang.getString("gen.student")
+                                                #end
 				 </th>
 					<td>
 						#if (!$privateView)
@@ -126,7 +155,16 @@
 				
 					</tr>
 				#end
-			
+			        #if ($!submission && $!submission.getSubmissionLog().size() > 0)
+                                        <tr>
+                                                <th>$tlang.getString("gen.history")</th>
+                                                <td>
+                                                        #foreach ($entry in $submission.getSubmissionLog())
+                                                                $entry<br>
+                                                        #end
+                                                </td>
+                                        </tr>
+                                #end
 			</table>
 		#if($assignment.getContent().AllowReviewService && $assignment.getContent().AllowStudentViewReport)
 			<div id="report" style='display:none'>$submission.getReviewReport()</div>
@@ -394,3 +432,4 @@
 			}
 		//-->
 	</script>
+

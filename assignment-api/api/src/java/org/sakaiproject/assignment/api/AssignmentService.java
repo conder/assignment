@@ -34,6 +34,7 @@ import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.user.api.User;
 import org.w3c.dom.Element;
+import org.sakaiproject.site.api.Group;
 
 /**
  * <p>
@@ -686,6 +687,21 @@ public interface AssignmentService extends EntityProducer
 	 *         if the current user is not allowed to read this.
 	 */
 	public AssignmentSubmission getSubmission(String assignmentId, User person);
+        
+        /**
+	 * Access a User or Group's AssignmentSubmission to a particular Assignment.
+	 * 
+	 * @param assignmentId -
+	 *        The id of the assignment.
+	 * @param submitterId -
+	 *        The string id of the person or group who's Submission you would like.
+	 * @return AssignmentSubmission The user's submission for that Assignment, or null if one does not exist.
+	 * @throws IdUnusedException
+	 *         if the assignmentId does not correspond to an existing Assignment.
+	 * @throws PermissionException
+	 *         if the current user is not allowed to read this.
+	 */
+         public AssignmentSubmission getSubmission(String assignmentReference, String submitterId);
 	
 	/**
 	 * Access a User's AssignmentSubmission inside a list of AssignmentSubmission object.
@@ -707,6 +723,11 @@ public interface AssignmentService extends EntityProducer
 	 */
 	public List getSubmissions(Assignment assignment);
 	
+	/**
+	 * Return a sorted list of users representing a group.
+	 */
+	public List getSortedGroupUsers(Group g);
+
 	/**
 	 * Get the number of submissions which has been submitted.
 	 * 
@@ -815,12 +836,15 @@ public interface AssignmentService extends EntityProducer
 	 */
 	public boolean canSubmit(String context, Assignment a);
 	
+	public Collection<Group> getSubmitterGroupList(String searchFilterOnly, String allOrOneGroup, String searchString, String aRef, String contextString);
 	/**
 	 * get appropriate submitter id list with group choice and site id
+	 * @param searchFilterOnly If true, return only those ids that matches the group filter and search criteria
 	 * @param allOrOneGroup "all" or specific group reference
 	 * @param aRef Assignment Reference
+	 * @param search The search string
 	 * @param contextString Site id
 	 * @return
 	 */
-	public List<String> getSubmitterIdList(String allOrOneGroup, String aRef, String contextString);	
+	public List<String> getSubmitterIdList(String searchFilterOnly, String allOrOneGroup, String search, String aRef, String contextString);	
 }

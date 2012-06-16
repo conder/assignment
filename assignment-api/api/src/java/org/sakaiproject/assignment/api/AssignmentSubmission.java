@@ -60,7 +60,19 @@ public interface AssignmentSubmission extends Entity
 	 * @return String - the Assignment id
 	 */
 	public String getAssignmentId();
-
+        
+        /**
+         * @return The GROUP or USER id who submitted this assignement
+         */
+        public String getSubmitterId();
+        /**
+         * Used to record submission history for group submissions.
+         * @return The LIST of submission log entries.
+         * 
+         * Not a proper log... could enhance to have a timestamp, user id, and note
+         */
+        public List getSubmissionLog();
+        
 	/**
 	 * Access the list of Users who submitted this response to the Assignment.
 	 * 
