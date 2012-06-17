@@ -185,43 +185,27 @@
 						<tr>
 							<td headers="studentname">
 								#set ($submitterNames = "")
-								## replace it with submitter sort names
-								#set ($count = 1)
-								#foreach ($submitter in $submission.submitters)
-									#set($submitterName = $submitter.getDisplayName())
-									#set($submitterId=$!submitter.getDisplayId())
-									##if ($!submitterId)
-										##attach the displayId
-										##set($submitterName=$submitterName.concat("(").concat($submitterId).concat(")"))
-									##end
-									#if ($!submitterName)
-										#if ($count == 1)
-											#set ($submitterNames = $!submitterName)
-										#else
-											#set ($submitterNames = $submitterNames.concat(", ").concat($!submitterName))
+                                                                #if ($submission.user)
+                                                                    #set($submitterName = $submission.getUser().getSortName())
+                                                                    #set($submitterId=$submission.getUser().getDisplayId())
+                                                                    #if ($!submitterId)
+                                                                        #set($submitterName=$submitterName.concat(" (").concat($submitterId).concat(")"))
 										#end
+                                                                    #if ($assignment.isGroup())
+                                                                        #if ($submission.group)
+                                                                                #set($submitterName=$submitterName.concat(" [").concat($submission.getGroup().getTitle()).concat("]"))
 									#end
-									#set ($count = $count + 1)
-								#end
-								#if ($assignment.isGroup()) 
-									#set($aGroup = $!site.getGroup($submission.getSubmitterId()))
-                                        				#if ($aGroup)
-                                                				$validator.escapeHtml($aGroup.getTitle())
-                                        				#else
-                                               					$tlang.getString("group.submission.not.found")
-                                        				#end
-									<div style="font-size: smaller;color: blue;">$validator.escapeHtml($!submitterNames)</div>
-								#else
-									$validator.escapeHtml($!submitterNames)
-								#end
+                                                               	    #end
+                                                                    $validator.escapeHtml($!submitterName)
+                                        			#end
 							</td>
 							<td headers="assignment">
-								$validator.escapeHtml($validator.limit($assignment.Title, 40))
                                         #if ($!assignment.isGroup() )
                                            <span class="group_icon" title="$tlang.getString('gen.groupassignment')" alt="$tlang.getString('gen.groupassignment')"></span>
                                         #else
                                            <span class="user_icon" title="$tlang.getString('gen.userassignment')" alt="$tlang.getString('gen.userassignment')"></span>
                                         #end
+								$validator.escapeHtml($validator.limit($assignment.Title, 40))
 							</td>
 							<td headers="grade">
 								#if ($!submission)

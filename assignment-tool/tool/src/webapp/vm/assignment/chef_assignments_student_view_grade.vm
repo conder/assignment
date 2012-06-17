@@ -52,12 +52,12 @@
 						$tlang.getString("gen.title")
 					</th>
 					<td valign="top">
-						$validator.escapeHtml($assignment.title)
                                         #if ($!assignment.isGroup() )
                                            <span class="group_icon" title="$tlang.getString('gen.groupassignment')" alt="$tlang.getString('gen.groupassignment')"></span>
                                         #else
                                            <span class="user_icon" title="$tlang.getString('gen.userassignment')" alt="$tlang.getString('gen.userassignment')"></span>
                                         #end
+						$validator.escapeHtml($assignment.title)
 					</td>
 				</tr>
 				#if ($!assignment.isGroup())
