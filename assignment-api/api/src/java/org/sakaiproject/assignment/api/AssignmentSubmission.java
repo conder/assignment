@@ -68,8 +68,6 @@ public interface AssignmentSubmission extends Entity
         /**
          * Used to record submission history for group submissions.
          * @return The LIST of submission log entries.
-         * 
-         * Not a proper log... could enhance to have a timestamp, user id, and note
          */
         public List getSubmissionLog();
         

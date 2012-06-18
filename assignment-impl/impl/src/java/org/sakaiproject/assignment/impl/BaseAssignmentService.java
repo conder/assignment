@@ -5015,7 +5015,7 @@ byte[] b = (s.getTimeSubmitted().toString()).getBytes();
 				if (s.getSubmitted())
 				{
 					// get the submission user id and see if the user is still in site
-					String userId = (String) s.getSubmitterIds().get(0);
+					String userId = s.getSubmitterId();
 					try
 					{
 						User u = UserDirectoryService.getUser(userId);
@@ -9192,7 +9192,7 @@ byte[] b = (s.getTimeSubmitted().toString()).getBytes();
 						
 							M_log.debug(this + " getReviewScore Item is not in queue we will try add it");
 							String contentId = cr.getId();
-							String userId = (String)this.getSubmitterIds().get(0);
+							String userId = this.getSubmitterId();
 							try {
 								contentReviewService.queueContent(userId, null, getAssignment().getReference(), contentId);
 							}
@@ -9737,6 +9737,8 @@ byte[] b = (s.getTimeSubmitted().toString()).getBytes();
 									attributeString = "submitter" + x;
 									tempString = attributes.getValue(attributeString);
 									if (tempString != null) m_submitters.add(tempString);
+                                                                        // for backward compatibility of assignments without submitter ids
+                                                                        if (m_submitterId == null) m_submitterId = tempString;
 								}
 							}
 							catch (Exception e)
@@ -10241,7 +10243,7 @@ byte[] b = (s.getTimeSubmitted().toString()).getBytes();
 					if (g.isGradebookDefined(gradebookUid) && g.isAssignmentDefined(gradebookUid, gAssignmentName))
 					{
 						// return student score from Gradebook
-						String userId = (String) m_submitters.get(0);
+						String userId = m_submitterId;
 						try
 						{
 							String gString = StringUtil.trimToNull(g.getAssignmentScoreString(gradebookUid, gAssignmentName, userId));
