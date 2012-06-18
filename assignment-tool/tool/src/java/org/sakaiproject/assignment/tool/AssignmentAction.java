@@ -3090,14 +3090,12 @@ public class AssignmentAction extends PagedResourceActionII
 
 		context.put("sortedBy", (String) state.getAttribute(SORTED_SUBMISSION_BY));
 		context.put("sortedAsc", (String) state.getAttribute(SORTED_SUBMISSION_ASC));
-		context.put("sortedBy_lastName", SORTED_SUBMISSION_BY_LASTNAME);
-		context.put("sortedBy_submitTime", SORTED_SUBMISSION_BY_SUBMIT_TIME);
-		context.put("sortedBy_grade", SORTED_SUBMISSION_BY_GRADE);
-		context.put("sortedBy_status", SORTED_SUBMISSION_BY_STATUS);
-		context.put("sortedBy_released", SORTED_SUBMISSION_BY_RELEASED);
-		context.put("sortedBy_assignment", SORTED_SUBMISSION_BY_ASSIGNMENT);
-		context.put("sortedBy_maxGrade", SORTED_SUBMISSION_BY_MAX_GRADE);
-
+		context.put("sortedBy_lastName", SORTED_GRADE_SUBMISSION_BY_LASTNAME);
+		context.put("sortedBy_submitTime", SORTED_GRADE_SUBMISSION_BY_SUBMIT_TIME);
+		context.put("sortedBy_grade", SORTED_GRADE_SUBMISSION_BY_GRADE);
+		context.put("sortedBy_status", SORTED_GRADE_SUBMISSION_BY_STATUS);
+		context.put("sortedBy_released", SORTED_GRADE_SUBMISSION_BY_RELEASED);
+                
 		add2ndToolbarFields(data, context);
 
 		String contextString = (String) state.getAttribute(STATE_CONTEXT_STRING);
@@ -3108,7 +3106,6 @@ public class AssignmentAction extends PagedResourceActionII
 
 		String template = (String) getContext(data).get("template");
 		return template + TEMPLATE_INSTRUCTOR_REPORT_SUBMISSIONS;
-
 	} // build_instructor_report_submissions
 	
 	// Is Gradebook defined for the site?
@@ -9194,7 +9191,7 @@ public class AssignmentAction extends PagedResourceActionII
 		}
                 public void setGroup(Group _group) {
                     m_group = _group;
-	}
+                }
 	}
 
 	/**
@@ -10242,8 +10239,7 @@ public class AssignmentAction extends PagedResourceActionII
 		}
 		else if (MODE_INSTRUCTOR_REPORT_SUBMISSIONS.equals(mode))
 		{
-			Vector submissions = new Vector();
-			
+			Vector submissions = new Vector();		
 			Vector assignments = iterator_to_vector(AssignmentService.getAssignmentsForContext(contextString));
 			try
 			{
@@ -10252,10 +10248,8 @@ public class AssignmentAction extends PagedResourceActionII
 				for (int j = 0; j < assignments.size(); j++)
 				{
 					Assignment a = (Assignment) assignments.get(j);
-					
 					//get the list of users which are allowed to grade this assignment
 	  				List allowGradeAssignmentUsers = AssignmentService.allowGradeAssignmentUsers(a.getReference());
-	  				
 	  				String deleted = a.getProperties().getProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED);
 	  				if ((deleted == null || "".equals(deleted)) && (!a.getDraft()) && AssignmentService.allowGradeSubmission(a.getReference()))
 	  				{
@@ -10273,8 +10267,6 @@ public class AssignmentAction extends PagedResourceActionII
                                                                        for (int m=0; _users != null && m < _users.length; m++) {
                                                                            Member member = site.getMember(_users[m].getId());
                                                                            if(member != null && member.isActive()) {
-										// only include the active student submission
-                                                                                // conder TODO create temporary submissions
                                                                                SubmitterSubmission _new_sub = new SubmitterSubmission(_users[m], s);
                                                                                 _new_sub.setGroup(site.getGroup(s.getSubmitterId()));
 										submissions.add(_new_sub);
@@ -10295,7 +10287,7 @@ public class AssignmentAction extends PagedResourceActionII
                                                                                 catch (UserNotDefinedException e)
                                                                                 {
                                                                                     M_log.warn(this + ":sizeResources cannot find user id=" + s.getSubmitterId() + e.getMessage() + "");
-									}
+                                                                                }
                                                                                 
                                                                             }
 									}   

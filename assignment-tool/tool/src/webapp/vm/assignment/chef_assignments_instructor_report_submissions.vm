@@ -180,11 +180,11 @@
 						</th>
 					</tr>
 					#foreach ($submission in $submissions)
-						#set ($assignment = $submission.getAssignment())
+						#set ($assignment = $submission.getSubmission().getAssignment())
 						#set ($submissionType = $assignment.Content.TypeOfSubmission)
 						<tr>
 							<td headers="studentname">
-								#set ($submitterNames = "")
+								#set ($submitterName = "")
                                                                 #if ($submission.user)
                                                                     #set($submitterName = $submission.getUser().getSortName())
                                                                     #set($submitterId=$submission.getUser().getDisplayId())
@@ -200,20 +200,20 @@
                                         			#end
 							</td>
 							<td headers="assignment">
-                                        #if ($!assignment.isGroup() )
-                                           <span class="group_icon" title="$tlang.getString('gen.groupassignment')" alt="$tlang.getString('gen.groupassignment')"></span>
-                                        #else
-                                           <span class="user_icon" title="$tlang.getString('gen.userassignment')" alt="$tlang.getString('gen.userassignment')"></span>
-                                        #end
-								$validator.escapeHtml($validator.limit($assignment.Title, 40))
+                                                            #if ($!assignment.isGroup() )
+                                                                <span class="group_icon" title="$tlang.getString('gen.groupassignment')" alt="$tlang.getString('gen.groupassignment')"></span>
+                                                            #else
+                                                                <span class="user_icon" title="$tlang.getString('gen.userassignment')" alt="$tlang.getString('gen.userassignment')"></span>
+                                                            #end
+                                                            $validator.escapeHtml($validator.limit($assignment.Title, 40))
 							</td>
 							<td headers="grade">
-								#if ($!submission)
-									#if ($submission.Graded)
+								#if ($submission.getSubmission())
+									#if ($submission.getSubmission().Graded)
 										#if ($assignment.getContent().TypeOfGrade == 1)
 											$tlang.getString("gen.nograd")
 										#else
-											$submission.gradeDisplay
+											$submission.getSubmission().gradeDisplay
 										#end
 									#end
 								#end
@@ -245,10 +245,10 @@
 								#if ($!submissionType == 4)
 									$tlang.getString("nonelec")
 								#else
-									#if ($!submission)
-										#if ($submission.submitted)
+									#if ($submission.getSubmission())
+										#if ($submission.getSubmission().submitted)
 											#set($timeSubmitted=false)
-											#set($timeSubmitted=$submission.TimeSubmitted)
+											#set($timeSubmitted=$submission.getSubmission().TimeSubmitted)
 											#if($!timeSubmitted)
 												$!timeSubmitted.toStringLocalFull()
 											#end
